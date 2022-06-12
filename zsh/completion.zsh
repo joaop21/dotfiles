@@ -1,6 +1,9 @@
-# Homebrew
+# zsh-completions plugin
+fpath=($DOTFILES/zsh/plugins/zsh-completions/src $fpath)
+
+# Homebrew autosuggestions
 if type brew &>/dev/null; then
-  FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
+  export FPATH="$(brew --prefix)/share/zsh/site-functions:$FPATH"
 
   autoload -Uz compinit
   compinit
@@ -9,6 +12,10 @@ fi
 # +---------+
 # | Options |
 # +---------+
+
+setopt AUTO_LIST		# Automatically list choices on ambiguous completion.
+setopt COMPLETE_IN_WORD	# Complete from both ends of a word.
+setopt MENU_COMPLETE		# Automatically highlight first element of completion menu
 
 # +-----------------+
 # | ZStyle Patterns |
