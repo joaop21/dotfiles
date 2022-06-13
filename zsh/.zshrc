@@ -7,9 +7,9 @@ source $DOTFILES/zsh/completion.zsh
 # Expansion and Globbing
 source $DOTFILES/zsh/expansion_globbing.zsh
 
-# Theme
+# Theme - SHOULD BE SOURCED BEFORE PLUGINS
+source $DOTFILES/zsh/themes.zsh
 
 # Plugins - SHOULD BE AT THE END OF THIS FILE
 source $DOTFILES/zsh/plugins.zsh
-
 
