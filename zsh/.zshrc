@@ -1,5 +1,5 @@
 # Aliases
-source $DOTFILES/zsh/aliases.zsh
+source $DOTFILES/system/aliases.sh
 
 # Completion
 source $DOTFILES/zsh/options/completion.zsh
