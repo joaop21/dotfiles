@@ -10,3 +10,6 @@ Plug 'tiagofumo/vim-nerdtree-syntax-highlight'	" Adds syntax highlighting to NER
 Plug 'joshdick/onedark.vim'	" OneDark theme (Atom default theme)
 
 call plug#end()
+
+" Custom Configurations
+so ${DOTFILES}/nvim/plugins/nerdtree.vim
