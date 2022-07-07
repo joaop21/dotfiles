@@ -11,6 +11,7 @@ nnoremap <leader>n :NERDTreeToggleVCS<CR>
 let NERDTreeNaturalSort=1
 let NERDTreeIgnore=['\.git$', '\.DS_Store']
 let NERDTreeShowHidden=1
+let NERDTreeWinPos="right"
 
 " +-----------+
 " | Behaviour |
