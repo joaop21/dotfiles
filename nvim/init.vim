@@ -1,6 +1,6 @@
-so ${DOTFILES}/nvim/modules/options.vim
-so ${DOTFILES}/nvim/modules/maps.vim
-so ${DOTFILES}/nvim/modules/plugins.vim
+so ${DOTFILES}/nvim/rc/options.vim
+so ${DOTFILES}/nvim/rc/maps.vim
+so ${DOTFILES}/nvim/rc/plugins.vim
 
 so ${DOTFILES}/nvim/plugins/nerdtree.vim
 
