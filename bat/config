@@ -1,3 +1,6 @@
+# Specify when to use colored output
+--color="always"
+
 # Don't use italic text on the terminal (not supported on all terminals)
 --italic-text=never
 
