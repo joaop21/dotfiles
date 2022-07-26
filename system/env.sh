@@ -6,6 +6,15 @@ export XDG_CONFIG_HOME="$DOTFILES"			# Where user-specific configurations are wr
 export XDG_CACHE_HOME="$HOME/.cache"			# Where user-specific non-essential (cached) data is written
 export XDG_DATA_HOME="$HOME/.local/share"		# Where user-specific data files is written
 
+# +--------------------+
+# |                    |
+# | Add New Envs Above |
+# |                    |
+# + -------------------+
+
+# Bat
+export BAT_CONFIG_PATH="$DOTFILES/bat/config"
+
 # FZF
 if [[ ! "$PATH" == */opt/homebrew/opt/fzf/bin* ]]; then
   export PATH="${PATH:+${PATH}:}/opt/homebrew/opt/fzf/bin"

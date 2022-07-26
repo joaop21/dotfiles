@@ -1,0 +1,12 @@
+# Don't use italic text on the terminal (not supported on all terminals)
+--italic-text=never
+
+# Use Git Ignore syntax to open .ignore files
+--map-syntax='.ignore:Git Ignore'
+#
+# Show line numbers, Git modifications and file header (but no grid)
+--style="numbers,changes,header"
+
+# Set the theme to "Nord"
+--theme="Nord"
+
