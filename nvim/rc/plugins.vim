@@ -15,5 +15,9 @@ Plug 'joshdick/onedark.vim'		" OneDark theme (Atom default theme)
 Plug 'vim-airline/vim-airline'					" Lean & mean status/tabline for vim
 Plug 'vim-airline/vim-airline-themes'		" Official theme repository for vim-airline
 
+" Find and Replace
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }	" Latest version of the fuzzy finder FZF
+Plug 'junegunn/fzf.vim'															" Fuzzy finder that uses the FZF available in the system
+
 call plug#end()
 

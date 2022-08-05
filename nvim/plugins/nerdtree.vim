@@ -2,7 +2,7 @@
 " | Mappings |
 " +----------+
 
-nnoremap <leader>n :NERDTreeToggleVCS<CR>
+nnoremap <LEADER>n :NERDTreeToggleVCS<CR>
 
 " +---------------+
 " | Customisation |

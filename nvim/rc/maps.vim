@@ -1,12 +1,12 @@
 " Leaders
-map <SPACE> <leader>
+map <SPACE> <LEADER>
 
 " Exit insert mode
 inoremap jk <ESC> 
 inoremap <ESC> <NOP>
 
 " Exit buffer
-nnoremap <leader>q :quit<CR>
+nnoremap <LEADER>q :quit<CR>
 
 " Save buffer to file
 nnoremap <C-s> :write<CR>
