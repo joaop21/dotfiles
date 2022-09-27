@@ -1,6 +1,7 @@
 """ General Options
-set autowrite       " write the contents of the file, if it has been modified
-set nocompatible	  " disable compatibility with old vim 
+set autowrite             " write the contents of the file, if it has been modified
+set nocompatible	        " disable compatibility with old vim 
+set clipboard=unnamedplus " connects with the system clipboard for all operations (yank, select, delete, etc)
 
 
 """ Identation and Tabs
