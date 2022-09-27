@@ -18,6 +18,7 @@ Plug 'vim-airline/vim-airline-themes'		" Official theme repository for vim-airli
 " Find and Replace
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }	" Latest version of the fuzzy finder FZF
 Plug 'junegunn/fzf.vim'															" Fuzzy finder that uses the FZF available in the system
+Plug 'gabrielpoca/replacer.nvim'                    " Makes a quickfix window editable, allowing changes to both the content of a file as well as its path
 
 call plug#end()
 
