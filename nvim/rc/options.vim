@@ -4,6 +4,11 @@ set nocompatible	        " disable compatibility with old vim
 set clipboard=unnamedplus " connects with the system clipboard for all operations (yank, select, delete, etc)
 
 
+""" Backup
+set nobackup      " doesn't make a backup before overwriting a file
+set nowritebackup " doesn't make a write backup before overwriting a file
+
+
 """ Identation and Tabs
 set expandtab			  " uses the correct number of spaces to insert a tab
 set shiftround      " round indent to multiple of 'shiftwidth'
@@ -14,10 +19,10 @@ set tabstop=2       " number of spaces that a <Tab> in the file counts for
 
 
 """ Layout
-set cursorline            " highlight the text line of the cursor with CursorLine
-set signcolumn=number     " when and how to draw the signcolumn 
-set splitbelow            " splitting a window will put the new window below the current one
-set splitright            " splitting a window will put the new window right of the current one
+set cursorline      " highlight the text line of the cursor with CursorLine
+set signcolumn=yes  " when and how to draw the signcolumn 
+set splitbelow      " splitting a window will put the new window below the current one
+set splitright      " splitting a window will put the new window right of the current one
 
 
 """ Lines
@@ -40,6 +45,7 @@ set smartcase       " override the 'ignorecase' option if the search pattern con
 
 """ Swap Files
 set noswapfile		  " disable the swapfile
+set updatetime=300  " if this many milliseconds nothing is typed the swap file will be written to disk. Also used for the CursorHold autocommand event.
 
 
 """ Undo Buffer

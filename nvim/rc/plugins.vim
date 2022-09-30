@@ -20,5 +20,8 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }	" Latest version of the fuzz
 Plug 'junegunn/fzf.vim'															" Fuzzy finder that uses the FZF available in the system
 Plug 'gabrielpoca/replacer.nvim'                    " Makes a quickfix window editable, allowing changes to both the content of a file as well as its path
 
+" Conquer of Completion
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
 call plug#end()
 
