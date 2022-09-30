@@ -12,6 +12,10 @@ export XDG_DATA_HOME="$HOME/.local/share"		# Where user-specific data files is w
 # |                    |
 # + -------------------+
 
+# ASDF
+export ASDF_DATA_DIR="$XDG_DATA_HOME/.asdf"
+export ASDF_CONFIG_FILE="$DOTFILES/asdf/.asdfrc"
+
 # Bat
 export BAT_CONFIG_PATH="$DOTFILES/bat/config"
 
