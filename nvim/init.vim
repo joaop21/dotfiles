@@ -1,6 +1,7 @@
 so ${DOTFILES}/nvim/rc/options.vim
 so ${DOTFILES}/nvim/rc/maps.vim
 so ${DOTFILES}/nvim/rc/plugins.vim
+so ${DOTFILES}/nvim/rc/providers.vim
 
 so ${DOTFILES}/nvim/plugins/coc.vim
 " so ${DOTFILES}/nvim/plugins/fugitive.vim
