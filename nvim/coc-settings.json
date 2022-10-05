@@ -17,7 +17,9 @@
 
   "colors.filetypes": ["*"],
 
-  "elixir.pathToElixirLS": "~/.dotfiles/.elixir-ls/release/language_server.sh",
+  "elixir.enable": true,
+  "elixir.pathToElixirLS": "~/.dotfiles/elixir/ls/language_server.sh",
+  "elixir.trace.server": "verbose",
 
   "eslint.autoFixOnSave": true,
   "eslint.enable": true,

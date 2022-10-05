@@ -1,0 +1,13 @@
+#!/bin/sh
+
+HOME=$(pwd)
+DST_DIR=$XDG_DATA_HOME/.elixir-ls
+
+# Build ElixirLS from source
+git clone https://github.com/elixir-lsp/elixir-ls.git $DST_DIR
+cd $DST_DIR
+mix deps.get && mix compile && mix elixir_ls.release -o release
+
+# Link to home
+cd $HOME
+ln -s $DST_DIR/release/language_server.sh language_server.sh
