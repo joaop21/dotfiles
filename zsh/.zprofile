@@ -10,3 +10,14 @@ CPPFLAGS="-I/opt/homebrew/opt/openssl@3/include"
 
 # Z
 . /opt/homebrew/etc/profile.d/z.sh
+
+
+
+#####################
+#                   #
+# Profile Dependant #
+#                   #
+#####################
+
+# asdf - yarn
+export PATH="$(yarn global bin):$PATH"
