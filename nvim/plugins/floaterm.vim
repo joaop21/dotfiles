@@ -15,12 +15,15 @@ let g:floaterm_wintype = 'float'
 let g:floaterm_width = 0.8
 let g:floaterm_height = 0.8
 let g:floaterm_position = 'center'
-let g:floaterm_borderchars = ''
+let g:floaterm_borderchars = '─│─│┌┐┘└'
 let g:floaterm_rootmarkers = ['.project', '.git', '.hg', '.svn', '.root']
 let g:floaterm_opener = 'split'
 let g:floaterm_autoclose = 1
 let g:floaterm_autohide = 1
 let g:floaterm_autoinsert = v:true
+
+hi Floaterm guibg=282c34
+hi FloatermBorder guibg=abb2bf guifg=282c34
 
 " +-----------+
 " | Behaviour |
