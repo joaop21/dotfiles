@@ -32,5 +32,8 @@ Plug 'neoclide/coc-tsserver', {'do': 'yarn install --frozen-lockfile'}
 " Languages
 Plug 'tomlion/vim-solidity'
 
+" Terminal
+Plug 'voldikss/vim-floaterm'
+
 call plug#end()
 
