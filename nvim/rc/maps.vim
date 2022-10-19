@@ -1,13 +1,20 @@
 " Leaders
-map <SPACE> <LEADER>
+map <space> <leader>
 
 " Exit insert mode
-inoremap jk <ESC> 
-inoremap <ESC> <NOP>
+inoremap jk <esc> 
+inoremap <esc> <nop>
 
 " Exit buffer
-nnoremap <LEADER>q :quit<CR>
+nnoremap <leader>q :quit<CR>
 
 " Save buffer to file
 nnoremap <C-s> :write<CR>
-inoremap <C-s> <ESC>:write<CR>a
+inoremap <C-s> <esc>:write<CR>a
+
+" Search
+nnoremap <silent> <leader>a :Ag <C-R><C-W><CR>
+nnoremap <leader>sw :%s/\<<C-r><C-w>\>//g<Left><Left>
+
+" Clear Highlights
+nnoremap <leader><CR> :noh<CR>

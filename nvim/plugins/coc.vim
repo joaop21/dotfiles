@@ -25,10 +25,6 @@ nnoremap <silent> K :call ShowDocumentation()<CR>
 " Symbol renaming.
 nmap <leader>rn <Plug>(coc-rename)
 
-" Formatting selected code.
-xmap <leader>ft  <Plug>(coc-format-selected)
-nmap <leader>ft  <Plug>(coc-format-selected)
-
 " +---------------+
 " | Customisation |
 " +---------------+
