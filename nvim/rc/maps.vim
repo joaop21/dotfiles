@@ -3,6 +3,7 @@ map <space> <leader>
 
 " Exit insert mode
 inoremap jk <esc> 
+inoremap kj <esc> 
 inoremap <esc> <nop>
 
 " Exit buffer
