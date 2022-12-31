@@ -11,6 +11,9 @@ CPPFLAGS="-I/opt/homebrew/opt/openssl@3/include"
 # Z
 . /opt/homebrew/etc/profile.d/z.sh
 
+# JAVA
+. $XDG_DATA_HOME/.asdf/plugins/java/set-java-home.zsh
+
 
 
 #####################
