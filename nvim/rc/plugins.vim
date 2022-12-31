@@ -6,7 +6,6 @@ Plug 'Xuyuanp/nerdtree-git-plugin'							" Show git status flags on NERDTree
 Plug 'ryanoasis/vim-devicons'										" Adds filetype-specific icons to NERDTree files and folders
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'	" Adds syntax highlighting to NERDTree based on filetype 
 Plug 'tpope/vim-fugitive'												" Git plugin
-Plug 'sheerun/vim-polyglot'											" A collection of language packs
 
 " Themes
 Plug 'joshdick/onedark.vim'		" OneDark theme (Atom default theme)
@@ -31,10 +30,13 @@ Plug 'neoclide/coc-prettier', {'do': 'yarn install --frozen-lockfile'}
 Plug 'neoclide/coc-tsserver', {'do': 'yarn install --frozen-lockfile'}
 
 " Languages
-Plug 'tomlion/vim-solidity'
+let g:polyglot_disabled = ['java']              " Polyglot doesn't support java. I need to disable it before the plugin
+Plug 'sheerun/vim-polyglot'											" A collection of language packs
+Plug 'tomlion/vim-solidity'                     " Syntax files for Solidity
+Plug 'uiiaoo/java-syntax.vim', {'for': 'java'}  " Syntax Highlighting for Java
 
 " Terminal
-Plug 'voldikss/vim-floaterm'
+Plug 'voldikss/vim-floaterm'  " Terminal in a floating/popup window
 
 call plug#end()
 
