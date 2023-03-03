@@ -9,6 +9,12 @@ inoremap <esc> <nop>
 " Exit buffer
 nnoremap <leader>q :quit<CR>
 
+" Mobe between splits
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
+
 " Save buffer to file
 nnoremap <C-s> :write<CR>
 inoremap <C-s> <esc>:write<CR>a
