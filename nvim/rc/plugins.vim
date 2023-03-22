@@ -38,5 +38,8 @@ Plug 'uiiaoo/java-syntax.vim', {'for': 'java'}  " Syntax Highlighting for Java
 " Terminal
 Plug 'voldikss/vim-floaterm'  " Terminal in a floating/popup window
 
+" Git Copilot
+Plug 'github/copilot.vim' " Github Copilot
+
 call plug#end()
 
