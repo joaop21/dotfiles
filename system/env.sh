@@ -19,6 +19,10 @@ export ASDF_CONFIG_FILE="$DOTFILES/asdf/.asdfrc"
 # Bat
 export BAT_CONFIG_PATH="$DOTFILES/bat/config"
 
+# Foundry
+export FOUNDRY_DIR="$XDG_DATA_HOME/.foundry"
+export PATH="$PATH:$XDG_DATA_HOME/.foundry/bin"
+
 # FZF
 if [[ ! "$PATH" == */opt/homebrew/opt/fzf/bin* ]]; then
   export PATH="${PATH:+${PATH}:}/opt/homebrew/opt/fzf/bin"
