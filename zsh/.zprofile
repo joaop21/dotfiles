@@ -14,6 +14,8 @@ CPPFLAGS="-I/opt/homebrew/opt/openssl@3/include"
 # JAVA
 . $XDG_DATA_HOME/.asdf/plugins/java/set-java-home.zsh
 
+# Cargo
+. $XDG_DATA_HOME/.cargo/env
 
 
 #####################
