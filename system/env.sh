@@ -19,6 +19,9 @@ export ASDF_CONFIG_FILE="$DOTFILES/asdf/.asdfrc"
 # Bat
 export BAT_CONFIG_PATH="$DOTFILES/bat/config"
 
+# Cargo
+export CARGO_HOME="$XDG_DATA_HOME/.cargo"
+
 # Foundry
 export FOUNDRY_DIR="$XDG_DATA_HOME/.foundry"
 export PATH="$PATH:$XDG_DATA_HOME/.foundry/bin"
@@ -38,6 +41,9 @@ export PATH="/opt/homebrew/opt/openssl@3/bin:$PATH"
 
 # Ripgrep
 export RIPGREP_CONFIG_PATH="$DOTFILES/ripgrep/.ripgreprc"
+
+# Rustup
+export RUSTUP_HOME="$XDG_DATA_HOME/.rustup"
 
 # Z
 export _Z_DATA="$XDG_DATA_HOME/z/.z"	# Datafile location
