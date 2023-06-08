@@ -2,9 +2,10 @@
 export DOTFILES="$HOME/.dotfiles"
 
 # User Directories
-export XDG_CONFIG_HOME="$DOTFILES"			# Where user-specific configurations are written
-export XDG_CACHE_HOME="$HOME/.cache"			# Where user-specific non-essential (cached) data is written
+export XDG_CONFIG_HOME="$DOTFILES"			    # Where user-specific configurations are written
+export XDG_CACHE_HOME="$HOME/.cache"        # Where user-specific non-essential (cached) data is written
 export XDG_DATA_HOME="$HOME/.local/share"		# Where user-specific data files is written
+#export XDG_CONFIG_HOME="$HOME/.config"      # Where user-specific configurations are stored
 
 # +--------------------+
 # |                    |
