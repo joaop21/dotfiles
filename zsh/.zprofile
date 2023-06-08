@@ -17,6 +17,9 @@ CPPFLAGS="-I/opt/homebrew/opt/openssl@3/include"
 # Cargo
 . $XDG_DATA_HOME/.cargo/env
 
+# Go
+. $XDG_DATA_HOME/.asdf/plugins/golang/set-env.zsh
+
 
 #####################
 #                   #
