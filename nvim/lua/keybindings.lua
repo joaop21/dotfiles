@@ -47,3 +47,7 @@ nmap("<leader>,", ":noh<cr>")
 
 -- Search (and replace)
 nmap("<leader>sw", [[:%s/\<<C-r><C-w>\>//g<left><left>]])
+
+-- Move to the beggining/end of the line
+nmap("<C-b>", "_")
+nmap("<C-e>", "g_")
