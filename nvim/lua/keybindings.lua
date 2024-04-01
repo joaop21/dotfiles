@@ -33,8 +33,8 @@ imap("<esc>", "<nop>")
 nmap("<leader>q", ":quit<cr>")
 
 -- Save buffer to file
-nmap("<C-s>", ":update<cr>")
-imap("<C-s>", "<C-o>:update<cr><esc>")
+nmap("<C-s>", ":update!<cr>")
+imap("<C-s>", "<C-o>:update!<cr><esc>")
 
 -- Move between panes
 nmap("<C-h>", ":wincmd h<cr>")
