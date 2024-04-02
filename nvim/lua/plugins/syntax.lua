@@ -5,6 +5,7 @@ return {
     lazy = false,
     opts = {
       ensure_installed = {
+        "c",
         "dockerfile",
         "eex",
         "elixir",
@@ -12,9 +13,12 @@ return {
         "javascript",
         "json",
         "lua",
+        "query",
         "solidity",
         "tsx",
         "typescript",
+        "vim",
+        "vimdoc",
         "yaml",
       },
       highlight = {
