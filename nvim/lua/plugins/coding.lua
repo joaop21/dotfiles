@@ -133,4 +133,26 @@ return {
       { "<S-Tab>", function() require("luasnip").jump(-1) end, mode = { "i", "s" } },
     },
   },
+
+  -- auto pairs
+  {
+    "echasnovski/mini.pairs",
+    event = "VeryLazy",
+    opts = {},
+    keys = {
+      {
+        "<leader>up",
+        function()
+          vim.g.minipairs_disable = not vim.g.minipairs_disable
+
+          if vim.g.minipairs_disable then
+            require("util").warn("Disabled auto pairs", { title = "Option" })
+          else
+            require("util").info("Enabled auto pairs", { title = "Option" })
+          end
+        end,
+        desc = "Toggle Auto Pairs",
+      },
+    },
+  },
 }
