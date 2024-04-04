@@ -67,6 +67,30 @@ local defaults = {
   },
 }
 
+M.did_init = false
+
+function M.init()
+  if M.did_init then
+    return
+  end
+
+  M.did_init = true
+
+  -- delay notifications till vim.notify was replaced or after 500ms
+  -- LazyVim.lazy_notify()
+
+  -- load options here, before lazy init while sourcing plugin modules
+  -- this is needed to make sure options will be correctly applied
+  -- after installing missing plugins
+  require("config.options")
+
+  require("util.plugin").setup()
+end
+
+function M.setup()
+  require("config.keymaps")
+end
+
 setmetatable(M, {
   __index = function(_, key)
     return vim.deepcopy(defaults)[key]
