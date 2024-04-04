@@ -1,3 +1,15 @@
+--
+-- GLOBAL EDITOR VARIABLES
+--
+
+-- Disable netrw
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+--
+-- VIM OPTIONS
+--
+
 local opt = vim.opt
 
 -- General Options
