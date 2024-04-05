@@ -1,4 +1,4 @@
-return {
+return  {
   {
     "navarasu/onedark.nvim",
     lazy = false,
@@ -9,11 +9,4 @@ return {
       require('onedark').load()
     end,
   },
-  {
-    "nvim-lualine/lualine.nvim",
-    dependencies = { 'nvim-tree/nvim-web-devicons' },
-    opts = {
-      theme = 'auto'
-    }
-  }
 }
