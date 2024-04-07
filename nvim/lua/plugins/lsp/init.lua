@@ -74,6 +74,13 @@ return {
       "williamboman/mason-lspconfig.nvim",
     },
     opts = {
+      -- options for vim.lsp.buf.format
+      -- `bufnr` and `filter` is handled by the util.format formatter,
+      -- but can be also overridden when specified
+      format = {
+        formatting_options = nil,
+        timeout_ms = nil,
+      },
       servers = {
         lua_ls = {
           settings = {
@@ -97,6 +104,9 @@ return {
       setup = {}
     },
     config = function(_, opts)
+      -- setup autoformat
+      require("util.format").register(require("util.lsp").formatter())
+
       -- setup keymaps
       require("util.lsp").on_attach(function(client, buffer)
         require("plugins.lsp.keymaps").on_attach(client, buffer)
