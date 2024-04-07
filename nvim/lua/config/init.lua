@@ -88,6 +88,17 @@ function M.init()
 end
 
 function M.setup()
+  local group = vim.api.nvim_create_augroup("LazyVim", { clear = true })
+
+  vim.api.nvim_create_autocmd("User", {
+    group = group,
+    pattern = "VeryLazy",
+    callback = function()
+      require("config.keymaps")
+      require("util.format").setup()
+    end,
+  })
+
   require("config.keymaps")
 end
 
