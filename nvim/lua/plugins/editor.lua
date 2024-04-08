@@ -2,7 +2,6 @@ return {
 	-- buffer remove
 	{
 		"echasnovski/mini.bufremove",
-
 		keys = {
 			{
 				"<leader>bd",
