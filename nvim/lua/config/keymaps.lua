@@ -1,49 +1,15 @@
-vim.g.mapleader = " "
+-- Keymaps are automatically loaded on the VeryLazy event
+-- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
+-- Add any additional keymaps here
 
-function map(mode, shortcut, command)
-	vim.keymap.set(mode, shortcut, command, { noremap = true, silent = true })
-end
+local map = vim.keymap.set
+local delete_map = vim.keymap.del
 
-function nmap(shortcut, command)
-	map("n", shortcut, command)
-end
+-- Exit Insert Mode
+map("i", "jk", "<esc>", { desc = "Exit Insert Mode", silent = true, noremap = true })
+map("i", "kj", "<esc>", { desc = "Exit Insert Mode", silent = true, noremap = true })
+map("i", "<esc>", "<nop>", { desc = "Disable Escape in Insert Mode", silent = true, noremap = true })
 
-function imap(shortcut, command)
-	map("i", shortcut, command)
-end
-
-function vmap(shortcut, command)
-	map("v", shortcut, command)
-end
-
-function tmap(shortcut, command)
-	map("t", shortcut, command)
-end
-
-function smap(shortcut, command)
-	map("s", shortcut, command)
-end
-
--- Exit insert mode
-imap("jk", "<esc>")
-imap("kj", "<esc>")
-imap("<esc>", "<nop>")
-
--- Exit buffer
-nmap("<leader>q", ":quit<cr>")
-
--- Save buffer to file
-nmap("<C-s>", ":update!<cr>")
-imap("<C-s>", "<C-o>:update!<cr><esc>")
-
--- Move between panes
-nmap("<C-h>", ":wincmd h<cr>")
-nmap("<C-j>", ":wincmd j<cr>")
-nmap("<C-k>", ":wincmd k<cr>")
-nmap("<C-l>", ":wincmd l<cr>")
-
--- Clear Highlights
-nmap("<leader>,", ":noh<cr>")
-
--- Search (and replace)
-nmap("<leader>sw", [[:%s/\<<C-r><C-w>\>//g<left><left>]])
+-- Clear search
+delete_map({ "i", "n" }, "<esc>", { desc = "Escape and Clear hlsearch" })
+map({ "i", "n" }, "<leader>,", "<cmd>noh<cr>", { desc = "Clear hlsearch" })
