@@ -42,6 +42,8 @@ return {
           end
         end, { "i", "s" }),
       })
+
+      table.insert(opts.sources, { name = "emoji" })
     end,
   },
 }
