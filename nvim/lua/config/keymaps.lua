@@ -12,4 +12,4 @@ map("i", "<esc>", "<nop>", { desc = "Disable Escape in Insert Mode", silent = tr
 
 -- Clear search
 delete_map({ "i", "n" }, "<esc>", { desc = "Escape and Clear hlsearch" })
-map({ "i", "n" }, "<leader>,", "<cmd>noh<cr>", { desc = "Clear hlsearch" })
+map({ "n" }, "<leader>,", "<cmd>noh<cr>", { desc = "Clear hlsearch" })
