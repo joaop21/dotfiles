@@ -4,19 +4,31 @@ return {
     "nvim-neo-tree/neo-tree.nvim",
     keys = {
       { "<leader>e", false },
-      { "<leader>ee", "<leader>fe", desc = "Explorer NeoTree (Root Dir)", remap = true },
+      { "<leader>fe", false },
+      { "<leader>E", false },
+      { "<leader>fE", false },
+      {
+        "<leader>ee",
+        function()
+          require("neo-tree.command").execute({ toggle = true, dir = LazyVim.root() })
+        end,
+        desc = "Explorer NeoTree (Root Dir)",
+      },
       {
         "<leader>ef",
         function()
-          require("neo-tree.command").execute({ toggle = true, dir = LazyVim.root(), reveal = true })
+          require("neo-tree.command").execute({ toggle = true, dir = vim.uv.cwd(), reveal = true })
         end,
-        desc = "Explorer Current File NeoTree (Root Dir)",
+        desc = "Explore Current File NeoTree (cwd)",
       },
     },
     opts = {
       filesystem = {
         filtered_items = {
           hide_dotfiles = false,
+          always_show_by_pattern = { -- uses glob style patterns
+            ".env*",
+          },
         },
       },
       window = {
