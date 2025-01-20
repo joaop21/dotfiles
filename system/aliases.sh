@@ -30,7 +30,7 @@ alias gst='git status'
 # | ls |
 # +----+
 
-alias ll='exa -alh --git --icons'
+alias ll='eza -alh --git --icons'
 
 # +------+
 # | nvim |
