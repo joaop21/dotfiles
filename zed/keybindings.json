@@ -1,0 +1,63 @@
+[
+  // Exit Insert Mode
+  {
+    "context": "Editor && vim_mode == insert && !menu",
+    "bindings": {
+      "j k": ["vim::SwitchMode", "Normal"],
+      "k j": ["vim::SwitchMode", "Normal"],
+      "escape": null
+    }
+  },
+  // Move between pages
+  {
+    "context": "Editor",
+    "bindings": {}
+  },
+  {
+    "context": "Editor && vim_mode == normal",
+    "bindings": {
+      "space e f": "workspace::ToggleLeftDock",
+      // "ctrl-/": "workspace::ToggleBottomDock",
+      // "space p": "editor::Format",
+      "space space": "file_finder::Toggle",
+      // "space v": "pane::SplitRight",
+      // "space h": "workspace::ActivateNextPane",
+      // "space l": "workspace::ActivatePreviousPane"
+      // Move between pages
+      "ctrl-h": ["workspace::ActivatePaneInDirection", "Left"],
+      "ctrl-l": ["workspace::ActivatePaneInDirection", "Right"],
+      "ctrl-k": ["workspace::ActivatePaneInDirection", "Up"],
+      "ctrl-j": ["workspace::ActivatePaneInDirection", "Down"],
+      // Move between buffers
+      "shift-l": "pane::ActivateNextItem",
+      "shift-h": "pane::ActivatePrevItem",
+      // write current buffer
+      "ctrl-s": "workspace::Save",
+      // Close current buffer
+      "space b d": "pane::CloseActiveItem"
+    }
+  },
+  {
+    "context": "ProjectPanel",
+    "bindings": {
+      "space e f": "workspace::ToggleLeftDock",
+      "escape": "workspace::ToggleLeftDock",
+      "ctrl-v": "pane::SplitRight"
+    }
+  },
+
+  // lazygit
+  {
+    "context": "vim_mode == normal && !menu",
+    "bindings": {
+      "space g g": [
+        "task::Spawn",
+        { "task_name": "start lazygit", "reveal_target": "center" }
+      ],
+      "space g f": [
+        "task::Spawn",
+        { "task_name": "start lazygit file log", "reveal_target": "center" }
+      ]
+    }
+  }
+]
