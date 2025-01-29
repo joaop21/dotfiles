@@ -14,6 +14,9 @@
   "cursor_blink": false,
   "relative_line_numbers": true,
   "scrollbar": { "show": "never" },
+  "terminal": {
+    "font_family": "MesloLGS NF"
+  },
   "theme": {
     "mode": "system",
     "light": "One Light",
