@@ -31,6 +31,8 @@
       // Move between buffers
       "shift-l": "pane::ActivateNextItem",
       "shift-h": "pane::ActivatePrevItem",
+      // write current buffer
+      "ctrl-s": "workspace::Save",
       // Close current buffer
       "space b d": "pane::CloseActiveItem"
     }
@@ -45,15 +47,6 @@
   },
 
   // lazygit
-  // {
-  //   "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
-  //   "bindings": {
-  //     "space g g": [
-  //       "task::Spawn",
-  //       { "task_name": "lazygit", "target": "center" }
-  //     ]
-  //   }
-  // }
   {
     "context": "vim_mode == normal && !menu",
     "bindings": {
