@@ -15,4 +15,3 @@ source $DOTFILES/zsh/themes/.themes.zsh
 
 # Plugins - SHOULD BE AT THE END OF THIS FILE
 source $DOTFILES/zsh/plugins/.plugins.zsh
-
