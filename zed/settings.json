@@ -1,0 +1,32 @@
+{
+  "features": {
+    "inline_completion_provider": "supermaven"
+  },
+  "assistant": {
+    "dock": "right",
+    "default_model": {
+      "provider": "zed.dev",
+      "model": "claude-3-5-sonnet-latest"
+    },
+    "version": "2"
+  },
+  "buffer_font_size": 14,
+  "cursor_blink": false,
+  "relative_line_numbers": true,
+  "scrollbar": { "show": "never" },
+  "theme": {
+    "mode": "system",
+    "light": "One Light",
+    "dark": "One Dark"
+  },
+  "ui_font_size": 14,
+  "vertical_scroll_margin": 5,
+  "vim_mode": true,
+  "vim": {
+    "relative_line_numbers": true,
+    "toggle_relative_line_numbers": true,
+    "use_multiline_find": true,
+    "use_smartcase_find": true,
+    "use_system_clipboard": "always"
+  }
+}
