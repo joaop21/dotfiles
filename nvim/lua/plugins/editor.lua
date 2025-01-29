@@ -42,6 +42,34 @@ return {
     "nvim-telescope/telescope.nvim",
     keys = {
       { "<leader>,", false },
+      { "<leader>/", LazyVim.pick("live_grep", { root = false }), desc = "Grep (cwd)" },
+      { "<leader><space>", LazyVim.pick("files", { root = false }), desc = "Find Files (cwd)" },
+    },
+    opts = {
+      defaults = {
+        file_ignore_patterns = {
+          -- "out/",
+          -- "cache/",
+          -- "node_modules",
+          -- "%.git/",
+          "%_build/",
+          "%.elixir%_ls",
+          "deps",
+        },
+        layout_config = {
+          prompt_position = "top",
+        },
+        sorting_strategy = "ascending",
+      },
+    },
+  },
+
+  {
+    "ibhagwan/fzf-lua",
+    keys = {
+      { "<leader>,", false },
+      { "<leader>/", LazyVim.pick("live_grep", { root = false }), desc = "Grep (cwd)" },
+      { "<leader><space>", LazyVim.pick("files", { root = false }), desc = "Find Files (cwd)" },
     },
   },
 }
