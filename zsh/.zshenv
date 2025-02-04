@@ -1,5 +1,6 @@
 # Source the system evironment variables file
 source $HOME/.dotfiles/system/env.sh
+source $HOME/.dotfiles/system/secret.env.sh
 
 # Zsh Environment variables
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
