@@ -1,6 +1,9 @@
 # zsh-completions plugin
 fpath=($DOTFILES/zsh/plugins/zsh-completions/src $fpath)
 
+# asdf
+fpath=(${ASDF_DATA_DIR:-$HOME/.asdf}/completions $fpath)
+
 # Homebrew autosuggestions
 if type brew &>/dev/null; then
   export FPATH="$(brew --prefix)/share/zsh/site-functions:$FPATH"
