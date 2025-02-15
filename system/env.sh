@@ -16,6 +16,7 @@ export XDG_DATA_HOME="$HOME/.local/share" # Where user-specific data files is wr
 # ASDF
 export ASDF_DATA_DIR="$XDG_DATA_HOME/.asdf"
 export ASDF_CONFIG_FILE="$DOTFILES/asdf/.asdfrc"
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 
 # Bat
 export BAT_CONFIG_PATH="$DOTFILES/bat/config"
