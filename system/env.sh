@@ -52,3 +52,30 @@ export WEZTERM_CONFIG_FILE="$DOTFILES/wezterm/wezterm.lua"
 
 # Z
 export _Z_DATA="$XDG_DATA_HOME/z/.z" # Datafile location
+
+# ERLANG
+
+export WX_CONFIG=/opt/homebrew/Cellar/wxwidgets@3.2/3.2.8.1/bin/wx-config-3.2
+export KERL_BUILD_DOCS=yes
+export KERL_INSTALL_MANPAGES=yes
+export KERL_USE_AUTOCONF=0
+# export KERL_CONFIGURE_OPTIONS="--disable-debug \
+#                                --disable-hipe \
+#                                --disable-sctp \
+#                                --disable-silent-rules \
+#                                --enable-darwin-64bit \
+#                                --enable-dynamic-ssl-lib \
+#                                --enable-kernel-poll \
+#                                --enable-shared-zlib \
+#                                --enable-smp-support \
+#                                --enable-threads \
+#                                --enable-wx \
+#                                --with-wx-config=/usr/local/bin/wx-config \
+#                                --without-javac \
+#                                --without-jinterface \
+#                                --without-odbc"
+
+export KERL_CONFIGURE_OPTIONS="--without-javac --enable-wx --with-ssl=/opt/homebrew/opt/openssl@3 --with-wx-config=$WX_CONFIG"
+
+# Zig
+export PATH="/opt/homebrew/opt/zig@0.14/bin:$PATH"
