@@ -48,4 +48,16 @@ return {
   --     end,
   --   },
   -- },
+  "neovim/nvim-lspconfig",
+  version = "*",
+  opts = {
+    servers = {
+      elixirls = false,
+      lexical = {
+        cmd = { "/Users/joao/Desktop/Projects/expert/apps/expert/burrito_out/expert_darwin_arm64" },
+        root_dir = require("lspconfig.util").root_pattern("mix.exs", ".git"),
+        filetypes = { "elixir", "eelixir", "heex" },
+      },
+    },
+  },
 }
