@@ -17,8 +17,8 @@ config.use_fancy_tab_bar = false
 config.hide_tab_bar_if_only_one_tab = true
 
 -- Fonts
--- config.font = wezterm.font("MesloLGS Nerd Font Mono")
-config.font = wezterm.font("MesloLGS NF")
+config.font = wezterm.font("MesloLGS Nerd Font Mono")
+-- config.font = wezterm.font("MesloLGS NF")
 config.font_size = 13
 
 return config

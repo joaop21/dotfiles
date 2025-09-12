@@ -1,6 +1,10 @@
 # Zsh
 zsh/.zcompdump
 zsh/.zsh_history
+zsh/.zsh_sessions
 
 # Command folders and files
 htop
+
+# GPG
+gnupg

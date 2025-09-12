@@ -9,13 +9,22 @@ CPPFLAGS="-I/opt/homebrew/opt/openssl@3/include"
 . /opt/homebrew/etc/profile.d/z.sh
 
 # JAVA
-. $XDG_DATA_HOME/.asdf/plugins/java/set-java-home.zsh
+JAVA_HOME="$XDG_DATA_HOME/.asdf/plugins/java/set-java-home.zsh"
+if [ -f $JAVA_HOME ]; then
+  . $JAVA_HOME
+fi
 
 # Cargo
-. $XDG_DATA_HOME/.cargo/env
+CARGO_HOME="$XDG_DATA_HOME/.cargo/env"
+if [ -f $CARGO_HOME ]; then
+  . $CARGO_HOME
+fi
 
 # Go
-. $XDG_DATA_HOME/.asdf/plugins/golang/set-env.zsh
+GO_PATH="$XDG_DATA_HOME/.asdf/plugins/golang/set-go-path.zsh"
+if [ -f $GO_PATH ]; then
+  . $GO_PATH
+fi
 
 # Direnv
 eval "$(direnv hook zsh)"
