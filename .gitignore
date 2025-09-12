@@ -5,3 +5,6 @@ zsh/.zsh_sessions
 
 # Command folders and files
 htop
+
+# GPG
+gnupg
