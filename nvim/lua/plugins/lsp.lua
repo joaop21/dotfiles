@@ -52,10 +52,12 @@ return {
   version = "*",
   opts = {
     servers = {
-      elixirls = false,
-      lexical = {
-        cmd = { "/Users/joao/Desktop/Projects/expert/apps/expert/burrito_out/expert_darwin_arm64" },
-        root_dir = require("lspconfig.util").root_pattern("mix.exs", ".git"),
+      expert = {
+        -- cmd = { "/Users/joao/Desktop/Projects/expert/apps/expert/burrito_out/expert_darwin_arm64", "--stdio" },
+        cmd = { "/Users/joao/.local/share/nvim/mason/bin/expert", "--stdio" },
+        root_dir = function(fname)
+          return require("lspconfig.util").root_pattern("mix.exs", ".git")(fname)
+        end,
         filetypes = { "elixir", "eelixir", "heex" },
       },
     },
