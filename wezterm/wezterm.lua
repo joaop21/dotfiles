@@ -21,4 +21,8 @@ config.font = wezterm.font("MesloLGS Nerd Font Mono")
 -- config.font = wezterm.font("MesloLGS NF")
 config.font_size = 13
 
+config.keys = {
+  {key="Enter", mods="SHIFT", action=wezterm.action{SendString="\x1b\r"}},
+}
+
 return config
