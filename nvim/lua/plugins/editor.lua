@@ -44,6 +44,13 @@ return {
       picker = {
         sources = {
           explorer = {
+            include = {
+              "**/.claude",
+              "**/.claude/**",
+              "**/CLAUDE.md",
+              "**/.github",
+              "**/.github/**",
+            },
             jump = {
               close = true,
             },
