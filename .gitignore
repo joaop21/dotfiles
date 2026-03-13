@@ -6,8 +6,14 @@ zsh/.zsh_sessions
 # Command folders and files
 htop
 
+# Claude Code
+.claude
+
 # Crossnote
 crossnote
+
+# Expert LSP
+.expert
 
 # GitHub Copilot
 github-copilot
