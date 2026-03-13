@@ -41,8 +41,7 @@ alias gundo='git reset HEAD~1 --soft'
 # | gh |
 # +----+
 
-alias gprv='gh pr view --web'
-alias gprw='gh pr create --web'
+alias gpr='gh pr view --web 2>/dev/null || gh pr create --web'
 
 # +----+
 # | ls |
