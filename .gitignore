@@ -6,5 +6,8 @@ zsh/.zsh_sessions
 # Command folders and files
 htop
 
+# GitHub Copilot
+github-copilot
+
 # GPG
 gnupg
