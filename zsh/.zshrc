@@ -10,6 +10,9 @@ source $DOTFILES/zsh/options/expansion_globbing.zsh
 # History
 source $DOTFILES/zsh/options/history.zsh
 
+# Navigation
+source $DOTFILES/zsh/options/navigation.zsh
+
 # Bindings
 source $DOTFILES/zsh/bindings.zsh
 
