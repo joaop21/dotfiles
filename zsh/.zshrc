@@ -19,5 +19,8 @@ source $DOTFILES/zsh/bindings.zsh
 # Theme - SHOULD BE SOURCED BEFORE PLUGINS
 source $DOTFILES/zsh/themes/.themes.zsh
 
+# Zoxide
+eval "$(zoxide init zsh)"
+
 # Plugins - SHOULD BE AT THE END OF THIS FILE
 source $DOTFILES/zsh/plugins/.plugins.zsh
