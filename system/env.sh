@@ -50,10 +50,8 @@ export RUSTUP_HOME="$XDG_DATA_HOME/.rustup"
 # Wezterm
 export WEZTERM_CONFIG_FILE="$DOTFILES/wezterm/wezterm.lua"
 
-# Z
-export Z_DATA_FOLDER="$XDG_DATA_HOME/z"
-mkdir -p $Z_DATA_FOLDER
-export _Z_DATA="$Z_DATA_FOLDER/.z" # Datafile location
+# Zoxide
+export _ZO_DATA_DIR="$XDG_DATA_HOME/zoxide"
 
 # ERLANG
 

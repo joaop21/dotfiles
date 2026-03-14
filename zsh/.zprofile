@@ -5,9 +5,6 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 LDFLAGS="-L/opt/homebrew/opt/openssl@3/lib"
 CPPFLAGS="-I/opt/homebrew/opt/openssl@3/include"
 
-# Z
-. /opt/homebrew/etc/profile.d/z.sh
-
 # JAVA
 JAVA_HOME="$XDG_DATA_HOME/.asdf/plugins/java/set-java-home.zsh"
 if [ -f $JAVA_HOME ]; then
