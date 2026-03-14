@@ -7,6 +7,9 @@ source $DOTFILES/zsh/options/completion.zsh
 # Expansion and Globbing
 source $DOTFILES/zsh/options/expansion_globbing.zsh
 
+# History
+source $DOTFILES/zsh/options/history.zsh
+
 # Bindings
 source $DOTFILES/zsh/bindings.zsh
 
