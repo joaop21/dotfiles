@@ -4,16 +4,20 @@ fpath=($DOTFILES/zsh/plugins/zsh-completions/src $fpath)
 # asdf
 fpath=(${ASDF_DATA_DIR:-$HOME/.asdf}/completions $fpath)
 
-# Homebrew autosuggestions
+# Homebrew
 if type brew &>/dev/null; then
   export FPATH="$(brew --prefix)/share/zsh/site-functions:$FPATH"
-
-  autoload -Uz compinit
-  compinit
 fi
+
+# Docker
+fpath=($HOME/.docker/completions $fpath)
 
 # FZF
 [[ $- == *i* ]] && source "/opt/homebrew/opt/fzf/shell/completion.zsh" 2> /dev/null
+
+# Initialize completions (must be after all fpath modifications)
+autoload -Uz compinit
+compinit
 
 # +---------+
 # | Options |
