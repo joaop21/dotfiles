@@ -1,0 +1,22 @@
+theme = TokyoNight Moon
+
+macos-titlebar-style = transparent
+macos-option-as-alt = true
+mouse-hide-while-typing = true
+
+window-padding-x = 0
+window-padding-y = 0
+window-padding-balance = true
+window-step-resize = true
+
+# Font
+font-family = MesloLGS Nerd Font Mono
+font-size = 13
+
+# Splits
+keybind = alt+v=new_split:right
+keybind = alt+s=new_split:down
+keybind = alt+h=goto_split:left
+keybind = alt+j=goto_split:down
+keybind = alt+k=goto_split:up
+keybind = alt+l=goto_split:right
