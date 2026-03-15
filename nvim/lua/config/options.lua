@@ -4,3 +4,6 @@
 
 -- Biome: Enable this option to avoid conflicts with Prettier.
 vim.g.lazyvim_prettier_needs_config = true
+
+-- Use git root as project root
+vim.g.root_spec = { { ".git" }, "lsp", "cwd" }
