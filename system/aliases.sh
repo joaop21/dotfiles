@@ -56,3 +56,9 @@ alias ll='eza -alh --git --icons'
 alias nv='nvim'
 alias vi='nvim'
 alias vim='nvim'
+
+# +--------+
+# | Claude |
+# +--------+
+
+alias cf='claude --worktree'
