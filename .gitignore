@@ -20,3 +20,6 @@ github-copilot
 
 # GPG
 gnupg
+
+# UV
+uv/uv-receipt.json

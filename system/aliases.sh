@@ -62,3 +62,15 @@ alias nv='nvim'
 alias tmux='tmux -f "$TMUX_CONF"'
 alias vi='nvim'
 alias vim='nvim'
+
+# +--------+
+# | Claude |
+# +--------+
+
+alias cf='claude --worktree'
+
+# +------------+
+# | Agent Deck |
+# +------------+
+
+alias ad='agent-deck'
