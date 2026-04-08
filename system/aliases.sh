@@ -54,5 +54,11 @@ alias ll='eza -alh --git --icons'
 # +------+
 
 alias nv='nvim'
+
+# +------+
+# | tmux |
+# +------+
+
+alias tmux='tmux -f "$TMUX_CONF"'
 alias vi='nvim'
 alias vim='nvim'
