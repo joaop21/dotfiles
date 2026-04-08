@@ -1,15 +1,18 @@
 ---
-name: code-reviewer
-description: Code review a pull request. Use when asked to review a PR or when given a PR number/URL.
+description: Use when asked to review a PR, given a PR number/URL, or after completing a feature implementation
+disable-model-invocation: true
+context: fork
 allowed-tools: Bash(gh issue view:*), Bash(gh search:*), Bash(gh issue list:*), Bash(gh pr comment:*), Bash(gh pr diff:*), Bash(gh pr view:*), Bash(gh pr list:*), Bash(gh api:*), Read, Grep, Glob
 ---
 
-Provide a code review for the given pull request.
+Provide a code review for pull request $ARGUMENTS.
 
 **Agent assumptions (applies to all agents and subagents):**
 
 - All tools are functional and will work without error. Do not test tools or make exploratory calls.
 - Only call a tool if it is required to complete the task. Every tool call should have a clear purpose.
+- Subagents are read-only: they may use Read, Grep, Glob, and gh CLI read commands (gh pr view, gh pr diff, gh api GET). No file edits or writes.
+- The entire review runs autonomously — do not ask the user for input at any point.
 
 Follow these steps precisely:
 
@@ -65,7 +68,7 @@ Follow these steps precisely:
 
    ---
 
-   ## 🤖 Code review
+   ## Code review
 
    No issues found. Checked for bugs, CLAUDE.md compliance, and coding standards.
 
@@ -76,7 +79,7 @@ Follow these steps precisely:
    ```bash
    gh api repos/{owner}/{repo}/pulls/{pr_number}/reviews \
      --method POST \
-     -f body="🤖 Code Review" \
+     -f body="Code Review" \
      -f event="COMMENT" \
      -f 'comments[][path]=<file_path>' \
      -f 'comments[][line]=<line_number>' \
