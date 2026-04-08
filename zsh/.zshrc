@@ -24,3 +24,5 @@ eval "$(zoxide init zsh)"
 
 # Plugins - SHOULD BE AT THE END OF THIS FILE
 source $DOTFILES/zsh/plugins/.plugins.zsh
+
+. "$HOME/.local/share/../bin/env"
