@@ -7,6 +7,9 @@ export XDG_CACHE_HOME="$HOME/.cache"      # Where user-specific non-essential (c
 export XDG_DATA_HOME="$HOME/.local/share" # Where user-specific data files is written
 #export XDG_CONFIG_HOME="$HOME/.config"      # Where user-specific configurations are stored
 
+# Tmux
+export TMUX_CONF="$DOTFILES/tmux/tmux.conf"
+
 # +--------------------+
 # |                    |
 # | Add New Envs Above |
