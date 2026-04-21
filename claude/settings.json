@@ -1,5 +1,103 @@
 {
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "permission_prompt|elicitation_dialog",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "agent-deck hook-handler",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "agent-deck hook-handler",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "agent-deck hook-handler"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "agent-deck hook-handler",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "agent-deck hook-handler",
+            "async": true
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/scripts/session-fetch-main.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "agent-deck hook-handler",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "agent-deck hook-handler",
+            "async": true
+          }
+        ]
+      }
+    ]
+  },
   "enabledPlugins": {
-    "superpowers@claude-plugins-official": true
-  }
+    "superpowers@claude-plugins-official": true,
+    "figma@claude-plugins-official": true,
+    "grill-me@subvisual": true
+  },
+  "extraKnownMarketplaces": {
+    "subvisual": {
+      "source": {
+        "source": "github",
+        "repo": "subvisual/harness"
+      }
+    }
+  },
+  "effortLevel": "high"
 }
