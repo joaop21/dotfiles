@@ -23,3 +23,6 @@ gnupg
 
 # UV
 uv/uv-receipt.json
+
+# Android
+.android
