@@ -89,7 +89,8 @@
   "enabledPlugins": {
     "superpowers@claude-plugins-official": true,
     "figma@claude-plugins-official": true,
-    "grill-me@subvisual": true
+    "grill-me@subvisual": true,
+    "caveman@caveman": true
   },
   "extraKnownMarketplaces": {
     "subvisual": {
@@ -97,7 +98,17 @@
         "source": "github",
         "repo": "subvisual/harness"
       }
+    },
+    "caveman": {
+      "source": {
+        "source": "github",
+        "repo": "JuliusBrussee/caveman"
+      }
     }
   },
-  "effortLevel": "high"
+  "effortLevel": "xhigh",
+  "skipAutoPermissionPrompt": true,
+  "permissions": {
+    "defaultMode": "auto"
+  }
 }
