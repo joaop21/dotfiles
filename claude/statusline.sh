@@ -11,8 +11,26 @@ dir=$(basename "$cwd")
 
 # Git branch from cwd (skip lock to avoid contention)
 branch=""
+branch_extra=""
 if git --no-optional-locks -C "$cwd" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  branch=$(git --no-optional-locks -C "$cwd" branch --show-current 2>/dev/null)
+  git() { command git --no-optional-locks -C "$cwd" "$@"; }
+  branch=$(git branch --show-current 2>/dev/null)
+
+  # Dirty marker for tracked changes (staged or unstaged); untracked ignored
+  if ! git diff --quiet --ignore-submodules 2>/dev/null \
+     || ! git diff --cached --quiet --ignore-submodules 2>/dev/null; then
+    branch_extra="*"
+  fi
+
+  # Ahead/behind vs upstream (left=behind, right=ahead); silent if no upstream
+  ab=$(git rev-list --left-right --count '@{u}...HEAD' 2>/dev/null)
+  if [ -n "$ab" ]; then
+    behind=${ab%%[[:space:]]*}
+    ahead=${ab##*[[:space:]]}
+    [ "${ahead:-0}" -gt 0 ] && branch_extra="${branch_extra}↑${ahead}"
+    [ "${behind:-0}" -gt 0 ] && branch_extra="${branch_extra}↓${behind}"
+  fi
+  unset -f git
 fi
 
 # Build parts
@@ -21,8 +39,8 @@ parts=()
 # dir segment (cyan)
 [ -n "$dir" ] && parts+=("$(printf '\033[36m%s\033[0m' "$dir")")
 
-# git branch segment (magenta)
-[ -n "$branch" ] && parts+=("$(printf '\033[35m%s\033[0m' "$branch")")
+# git branch segment (magenta), with dirty + ahead/behind markers
+[ -n "$branch" ] && parts+=("$(printf '\033[35m%s%s\033[0m' "$branch" "$branch_extra")")
 
 # model segment (dim white)
 [ -n "$model" ] && parts+=("$(printf '\033[2m%s\033[0m' "$model")")
