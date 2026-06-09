@@ -110,5 +110,9 @@
   "skipAutoPermissionPrompt": true,
   "permissions": {
     "defaultMode": "auto"
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.dotfiles/claude/statusline.sh"
   }
 }
