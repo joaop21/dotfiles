@@ -21,6 +21,12 @@ github-copilot
 # GPG
 gnupg
 
+# Homebrew
+homebrew/trust.json
+
+# SwiftPM
+swiftpm
+
 # UV
 uv/uv-receipt.json
 
