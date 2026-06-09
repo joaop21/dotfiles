@@ -13,6 +13,8 @@ Personal dotfiles repository using XDG Base Directory Specification. `XDG_CONFIG
 - `~/.wezterm.lua` → `wezterm/wezterm.lua`
 - `~/.config/zed/*` → `zed/*` (via `zed/install.sh`)
 
+**Claude Code settings** (`claude/install.sh`): most paths (`rules`, `agents`, `skills`, `commands`, `scripts`) are symlinked, but `~/.claude/settings.json` is **not** — Claude Code rewrites it at runtime, which breaks symlinks. Managed config lives in `claude/settings.base.json`, kept in **two-way sync** with the live file: `claude/scripts/merge-settings.sh` applies base → live at `SessionStart` (base wins, Claude's runtime additions survive); `claude/scripts/capture-settings.sh` snapshots live → base at `SessionEnd` (sorted, so `base.json` shows as a working-tree change after sessions Claude touched settings — commit it manually). Edit tracked settings in `settings.base.json`.
+
 **Zsh load order**: `~/.zshenv` → `system/env.sh` + `system/secret.env.sh` → `zsh/.zshrc` (sources aliases, completions, bindings, theme, plugins)
 
 **Plugins/themes**: Managed as git submodules in `zsh/plugins/` and `zsh/themes/`.
