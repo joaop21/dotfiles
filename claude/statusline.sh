@@ -4,6 +4,7 @@ input=$(cat)
 
 cwd=$(echo "$input" | jq -r '.workspace.current_dir // .cwd // ""')
 model=$(echo "$input" | jq -r '.model.display_name // ""')
+effort=$(echo "$input" | jq -r '.effort.level // empty')
 used=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
 tok_used=$(echo "$input" | jq -r '.context_window.total_input_tokens // empty')
 tok_max=$(echo "$input" | jq -r '.context_window.context_window_size // empty')
@@ -39,8 +40,12 @@ parts=()
 # git branch segment (magenta)
 [ -n "$branch" ] && parts+=("$(printf '\033[35m%s\033[0m' "$branch")")
 
-# model segment (dim white)
-[ -n "$model" ] && parts+=("$(printf '\033[2m%s\033[0m' "$model")")
+# model segment (dim white), with effort level when present
+if [ -n "$model" ]; then
+  label="$model"
+  [ -n "$effort" ] && label="$model ($effort)"
+  parts+=("$(printf '\033[2m%s\033[0m' "$label")")
+fi
 
 # context usage segment: tokens + percentage (yellow)
 if [ -n "$used" ]; then
