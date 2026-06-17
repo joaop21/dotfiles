@@ -4,9 +4,9 @@ fpath=($DOTFILES/zsh/plugins/zsh-completions/src $fpath)
 # asdf
 fpath=(${ASDF_DATA_DIR:-$HOME/.asdf}/completions $fpath)
 
-# Homebrew
+# Homebrew (plain fpath=(), never `export FPATH` — see .zshenv for why)
 if type brew &>/dev/null; then
-  export FPATH="$(brew --prefix)/share/zsh/site-functions:$FPATH"
+  fpath=($(brew --prefix)/share/zsh/site-functions $fpath)
 fi
 
 # Docker
