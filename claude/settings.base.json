@@ -21,6 +21,7 @@
       }
     },
     "subvisual": {
+      "autoUpdate": true,
       "source": {
         "repo": "subvisual/harness",
         "source": "github"
@@ -134,6 +135,7 @@
     "defaultMode": "auto"
   },
   "skipAutoPermissionPrompt": true,
+  "skipWorkflowUsageWarning": true,
   "statusLine": {
     "command": "bash ~/.dotfiles/claude/statusline.sh",
     "type": "command"
