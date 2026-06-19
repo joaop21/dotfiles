@@ -32,3 +32,7 @@ uv/uv-receipt.json
 
 # Android
 .android
+
+# Agent of Empires (aoe) — track config.toml, ignore generated runtime state
+agent-of-empires/*
+!agent-of-empires/config.toml
