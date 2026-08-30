@@ -30,6 +30,7 @@ Personal dotfiles repository using XDG Base Directory Specification. `XDG_CONFIG
 - `zed/` — Zed editor config
 - `bat/`, `ripgrep/` — CLI tool configs (referenced via env vars)
 - `gh/` — GitHub CLI config and aliases
+- `agent-of-empires/` — aoe (tmux AI-agent session manager) XDG config; only `config.toml` is tracked, generated runtime state (logs, caches, locks, `profiles/`, `tui-presence/`, `trusted_repos.toml`) is gitignored
 
 ## Encryption
 
