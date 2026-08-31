@@ -26,6 +26,7 @@
       "**Org-specific CLIs**: None configured"
     ]
   },
+  "disableRemoteControl": true,
   "effortLevel": "high",
   "enabledPlugins": {
     "building@subvisual": true,
