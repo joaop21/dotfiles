@@ -2,30 +2,20 @@
 name: verify-ticket
 description: Use when picking up a bug ticket, issue, or defect report by key (a Jira key, a Jira URL, a GitHub issue number) whose description makes claims about the code, before implementing anything or agreeing the defect is real
 argument-hint: "[TICKET-1234 | jira-url | gh-issue-number]"
+allowed-tools: Bash, Read, Grep, Glob, Write, Agent, ToolSearch, Skill
 ---
 
 # Verify Ticket
-
-## Overview
 
 A ticket description is a claim about the code, written at some past commit, by someone who may have been wrong. Parts of it are load-bearing for the fix you are about to write.
 
 **The failure this prevents: confirmation-by-anchor.** You open each `file.ts:260` the ticket cites, the line says what the ticket says it says, and you call the ticket verified. Every anchor can be exact while the ticket is still wrong, because the claims that break a fix are rarely at the anchors.
 
-Works on any tracker. Jira and GitHub intake are both first-class below; the rule — **the record, not the card** — is the same either way.
+**Default: dispatch the `ticket-verifier` agent with the key.** It owns the whole procedure including intake, and returns a capped verdict plus a path to the full report — a card body runs ~16k characters and a JQL over the linked keys can exceed 65k, none of which the caller needs. Run inline only if you *are* that agent, or the card has fewer than three claims and none of them is Universal or Behavioral.
 
-## Running this without poisoning the session
+Never `subagent_type: "fork"` for any of this. A fork inherits the caller's context, which is the opposite of the point.
 
-This procedure generates large payloads — a card body with comments runs ~16k characters, a JQL over the linked keys can exceed 65k, and the repro and greps are unbounded. Run inline, all of it lands in the calling session.
-
-**Default: commission it, do not run it.** Dispatch the `ticket-verifier` agent with the ticket key. It owns the whole procedure including intake, dispatches its own lanes, and returns a capped three-bucket verdict plus a path to the full report. The calling session pays for the verdict, not the working material.
-
-Run it inline only when you *are* the verifier, or when the card is small enough that the boundary costs more than it saves.
-
-Whoever runs it, two rules hold:
-
-- **Never `subagent_type: "fork"`.** A fork inherits the caller's context — the opposite of the point.
-- **Cap what comes back.** The full report goes to a file; the return is the verdict, one line per bucket item, and the path. When the buckets are long, cut the *evidence* from the return, never the *items* — a failed claim must surface even when its proof stays in the file.
+Works on any tracker; Jira and GitHub intake are peers below.
 
 ## Intake: the record, not the card
 
@@ -33,137 +23,109 @@ Whoever runs it, two rules hold:
 
 The card cannot tell you what the card owns. Whatever the tracker, pull all four before checking anything:
 
-1. **The card with its comments.** Read them in order: a card whose description still asserts something a comment already retracted is the normal case, not the exception. They are not a trusted layer over an untrusted one, though — see the claim table.
-2. **Every linked and blocking card, by key or number.** Read their **status**, not the card's account of them. A blocker that is `Done` or `Cancelled` changes what this card is waiting for, and a `Cancelled` blocker means its sequencing paragraph is now unsatisfiable.
-3. **The design doc / EDD / RFC / issue epic** the card descends from — usually named in the description or in the PR that merged it. It, not the card, decides scope.
-4. **Open PRs** on this branch or the sibling cards (`gh pr list`). Half the card may already be merged.
+1. **The card with its comments.** Read them in order: a card whose description still asserts something a comment already retracted is the normal case, not the exception.
+2. **Every linked and blocking card**, by key or number. Read their **status**, not the card's account of them. A blocker that is `Done` or `Cancelled` changes what this card is waiting for, and a `Cancelled` blocker means its sequencing paragraph is now unsatisfiable.
+3. **The design doc / EDD / RFC / epic** the card descends from — usually named in the description or in the PR that merged it. It, not the card, decides scope.
+4. **Open PRs** on this branch or the sibling cards. Half the card may already be merged.
 
 Skip this intake and you will confirm a claim the design doc already put out of scope, and hand back a card that reads done while the other half is still live.
+
+Write what comes back to `${TMPDIR:-/tmp}/ticket-verification/<KEY>-intake.json` and pass that path to the lanes. Raw fetched data is not a verdict, so passing it does not breach the dispatch contract — and a lane that re-fetches the card pays the 16k twice.
 
 ### GitHub
 
 ```bash
-gh issue view <n> --comments --json title,body,state,labels,comments,closedByPullRequestsReferences
-gh issue view <n> --json body -q .body | grep -oE '#[0-9]+|[A-Z]+-[0-9]+'   # linked work
-gh pr list --search "<n>" --state all
+gh issue view <n> --json title,body,state,labels,comments,closedByPullRequestsReferences,blockedBy,blocking,subIssues,parent
+gh pr list --search "<n> in:body" --state all --limit 20 --json number,title,state,url
 ```
 
-`--comments` is not implied by `--json comments` in older `gh`; pass both. Linked issues are not a structured field on most repos — they live in the body text and in timeline cross-references, so read the body for `#123` and `Closes #123` and fetch each.
+`--comments` is ignored when `--json` is present; ask for the `comments` field instead. If `gh` rejects `blockedBy`/`subIssues`, it predates issue dependencies — fall back to grepping the body for `#123` and `Closes #123`.
 
 ### Jira
 
 The Atlassian tools are deferred — load them first:
 
 ```
-ToolSearch("select:mcp__plugin_atlassian_atlassian__getJiraIssue,mcp__plugin_atlassian_atlassian__searchJiraIssuesUsingJql")
+ToolSearch("select:mcp__plugin_atlassian_atlassian__getJiraIssue,mcp__plugin_atlassian_atlassian__searchJiraIssuesUsingJql,mcp__plugin_atlassian_atlassian__getAccessibleAtlassianResources")
 ```
 
-If they do not resolve, the Atlassian plugin is not enabled here. Say so and fall back to the record you can reach (`gh`, the design doc, the PRs); do not silently verify a Jira card from its description alone.
-
-Fetch the card with its comments and links in one call:
+If they do not resolve, the Atlassian plugin is not enabled here. Say so and work the record you can reach; do not verify a Jira card from a description you could not fetch.
 
 ```json
-{
-  "cloudId": "<site cloud id>",
-  "issueIdOrKey": "TICKET-1234",
+{ "cloudId": "<site cloud id>", "issueIdOrKey": "TICKET-1234",
   "responseContentFormat": "markdown",
-  "fields": ["summary", "description", "status", "issuetype", "parent",
-             "assignee", "created", "updated", "comment", "issuelinks",
-             "<sprint field>"]
-}
+  "fields": ["summary","description","status","updated","comment","issuelinks"] }
 ```
 
-`comment` and `issuelinks` are the two that matter and neither is in the default field set. Get `cloudId` from `getAccessibleAtlassianResources` and the sprint field id from `getJiraIssueTypeMetaWithFields` — or read them off *Known sites* at the bottom of this file, and add the site there once you have looked them up.
+`comment` and `issuelinks` are the two that matter and neither is in the default field set. Get `cloudId` from `getAccessibleAtlassianResources`, or read it off *Known sites* below.
 
-Then pull the linked and blocking keys in one JQL call: `key in (TICKET-1235, TICKET-1236)`.
+Then the linked and blocking keys in one call — ask for the three fields you read, or the response overflows the tool cap:
 
-`searchJiraIssuesUsingJql` payloads are huge and overflow the tool cap; when the result is written to a file, read it back with
-`jq -r '.issues.nodes[] | "\(.key)\t\(.fields.status.name)\t\(.fields.summary)"' <file>`.
+```json
+{ "jql": "key in (TICKET-1235, TICKET-1236)", "fields": ["key","status","summary"], "maxResults": 50 }
+```
 
 ## Pin the commit
 
 State the sha you verified at. The ticket was written at a different one.
 
-To run code somewhere other than the ticket's sha (a checkout that has `node_modules`), first prove the file is the same:
+To run code somewhere other than the ticket's sha, first prove the file is the same — compare blob hashes rather than diffing, so a mismatch does not dump the file into context:
 
 ```bash
-git diff <ticket-sha> <your-sha> -- path/to/file.ts
+git rev-parse <ticket-sha>:path/to/file.ts <your-sha>:path/to/file.ts
 ```
 
-Empty diff licenses the move. Say in the report that you checked.
+Equal hashes license the move. Say in the report that you checked.
 
-**Run the diff yourself; never inherit one.** A comment on the ticket saying "this file is unchanged since X" was true when it was written. Files move. A stale licence has you running a different function than the one you are reporting on.
+**Run the check yourself; never inherit one.** A comment saying "this file is unchanged since X" was true when it was written. A stale licence has you running a different function than the one you are reporting on.
 
 ## Classify each claim, then check it by its type
 
 | Claim shape | How it is actually checked | Not enough |
 |---|---|---|
 | **Title** — "derived status reports `synced`" | Check it against the observed behaviour, clause by clause | Reading it as a label |
-| **Anchor** — "`foo.ts:260` does X" | Open it. Then ask whether it is the *right* anchor: the single place, or a wrapper over the real one? | The line existing |
-| **Universal** — "exactly one writer", "only", "sole", "always", "never" | Enumerate the population. `grep` every writer, caller, branch. | Confirming the one instance the ticket names |
+| **Anchor** — "`foo.ts:260` does X" | Open it, ask whether it is the *right* anchor or a wrapper over the real one, then look for the path that **bypasses** it | The line existing |
+| **Universal** — "exactly one writer", "only", "sole", "always", "never" | Enumerate the population — every writer, caller, branch, including indirect ones — then narrow the claim to what survives | Confirming the one instance the ticket names |
 | **Scope** — "this card fixes X" | The design doc and the sibling cards decide who owns X | The card asserting it |
-| **Behavioral** — "this returns `pending`" | Run it | Reading the function and predicting |
+| **Behavioral** — "this returns `pending`" | Run it, with a control | Reading the function and predicting |
 | **Comment** — "verified at X", "this is unchanged", "blocked on Y" | Date it, then re-check it at today's state | That someone already checked |
 
-**Start with the title.** It is the most-read and least-checked sentence on the card: it is what the backlog shows, what gets quoted in standup, and what a "is this done?" review is scored against. It is also written first, when the author understood the least. Read it as a claim with a subject and a verb, and check each clause — a title asserting the wrong observed value survives a full verification of the description, because nobody ever points a check at it.
+An anchor that is real but bypassable is a refutation: a fix written to it ships on one path and not the other. "Only creator" is a different and often true claim than "only writer" — report the narrowed version rather than a bare REFUTED.
 
-A title that contradicts its own description is the common shape, and either half can be the wrong one. Report the contradiction; do not quietly pick the half you verified.
+**Start with the title.** It is the most-read and least-checked sentence on the card: what the backlog shows, what gets quoted in standup, what a "is this done?" review is scored against. It is also written first, when the author understood the least. A title asserting the wrong observed value survives a full verification of the description, because nobody ever points a check at it. A title that contradicts its own description is the common shape, and either half can be the wrong one — report the contradiction, do not quietly pick the half you verified.
 
-**A comment is a claim with a timestamp, not a correction you inherit.** It was true when written. Three shapes go stale, and all three appear on ordinary cards:
-
-- a **licence** — "this file is unchanged since X, so you can run it in the other checkout". Re-run the diff.
-- a **relay** — an answer sourced from another repo, a dashboard, or a query nobody has re-run. Keep it, attribute it, and put it under *Not checked* unless you re-derive it.
-- a **pointer** — "this unblocks when Y ships". Read Y's status; a `Cancelled` blocker makes the plan built on it unsatisfiable.
-
-Later comments supersede earlier ones, but the newest is not automatically right either — it is just the most recent claim.
-
-**The universals are where tickets are wrong.** "Exactly one writer" names the writer the author thought of. Grep for the others before building a rule on top of it.
+**A comment is a claim with a timestamp, not a correction you inherit.** Three shapes go stale: a **licence** ("this file is unchanged since X") — re-run the check; a **relay** (an answer sourced from another repo, a dashboard, or a query nobody re-ran) — attribute it and put it under *Not checked* unless you re-derive it; a **pointer** ("this unblocks when Y ships") — read Y's status. Later comments supersede earlier ones, but the newest is not automatically right; it is the most recent claim.
 
 ## Dispatch: three lanes, framed to refute
 
-**Framing first, and it is free.** An agent asked to *verify* a claim drifts toward confirming it — that is how "exactly one writer" survives a full pass. Ask each agent to **refute**: the claim is false until it survives an attempt to break it.
+**Framing first, and it is free.** An agent asked to *verify* a claim drifts toward confirming it — that is how "exactly one writer" survives a full pass. Each lane is framed to **refute**: the claim is false until it survives an attempt to break it.
 
-Worth it before a card you will spend days on. Skip the lanes for a card with two claims and an obvious fix — a fan-out is roughly 3x the cost of doing it inline.
+Split by **claim type**, never by file or by claim. Four agents each handed "confirm `foo.ts:260`" reproduces confirmation-by-anchor four times over. Dispatch a lane when it has two or more claims of its type; a single-claim lane runs inline.
 
-Split by **claim type**, never by file or by claim. Four agents each handed "confirm `foo.ts:260`" reproduces confirmation-by-anchor four times over. The types need different context and different tools, and that is the axis that pays:
-
-| Lane | `subagent_type` | Claim types | Must NOT receive |
+| Lane | `subagent_type` | Claim types | Also receives |
 |---|---|---|---|
-| **Repo sweep** | `claim-refuter-repo` | Universal, Anchor | the card itself, or anyone's conclusion |
-| **Record** | `claim-refuter-record` | Scope, Comment, blocker status | the code findings |
-| **Runtime** | `claim-refuter-runtime` | Behavioral | your expected result |
+| **Repo sweep** | `claim-refuter-repo` | Universal, Anchor | nothing else — not the card, not a conclusion |
+| **Record** | `claim-refuter-record` | Scope, Comment, blocker status | the intake path |
+| **Runtime** | `claim-refuter-runtime` | Behavioral | an isolated checkout if the repo supports one |
 
-Each has an agent definition carrying the refute stance, its breaking moves, its tool scope and its return cap. Send claims and a sha; do not restate the method, and do not send your reasoning.
+Each agent definition carries its own refute stance, breaking moves, tools and return shape. Dispatch with slots only — a template with no free-text field has nowhere for a verdict to leak into:
 
-All three in one message so they run concurrently. The Repo lane is the one that catches universals: its whole job is enumerating populations, and it has no card text tempting it to stop at the named instance.
+```
+Claims: <verbatim list, one per line>
+Sha: <sha>
+Name your refutation condition for each before you look.
+```
 
-**Do not parallelize the repro.** It is one harness; splitting it buys four transcriptions of the same file and four chances to stub something. The Runtime lane owns it, following *Reproduce with a control* below.
+All lanes in one message so they run concurrently. The Repo lane is the one that catches universals: its whole job is enumerating populations, and it has no card text tempting it to stop at the named instance.
+
+**Do not parallelize the repro.** It is one harness; splitting it buys four transcriptions of the same file and four chances to stub something. The Runtime lane owns it, and its definition carries the method — control arm, real module, blob-hash proof.
 
 **The title check is not a lane.** It is a comparison against the Runtime lane's observed values, so it runs on the main thread once that lane returns.
 
-### Contract for every lane
+Two rules about what comes back:
 
-1. **Never hand it your verdict.** Give it the claim and the sha. Handed your conclusion, it grades your conclusion — an easier, different task.
-2. **Make it name its refutation condition first.** "What would I have to find for this to be false?", stated before it goes looking. An agent that has named the disconfirming evidence cannot drift into confirming.
-3. **A `SURVIVED` with no attempt named is not a pass.** It is indistinguishable from a lane that did not look. Send it back.
-4. **Re-verify yourself, but only the findings that change the text.** A lane that relays an answer from another repo, a dashboard, or a query nobody re-ran has produced a *Not checked* item, whatever confidence it reports.
-
-## Reproduce with a control
-
-The defect case alone proves nothing — you cannot tell which input caused it.
-
-- **A** — the defect case
-- **B** — a control identical to A except the one input the ticket blames
-
-Then one case per class the ticket's guard exists for, so you learn whether the guard protects something real or a hypothetical.
-
-Run **the real module**. Copying the source into a scratch file with imports stubbed runs your transcription, not the code; "logic untouched" is a claim your reader cannot check. Blocked by deps, use the sha-diff above to move to a checkout that has them. Delete the scratch harness afterwards.
-
-If you must extract a file to run it, make the reader able to check you: `shasum` what you ran against the git blob and report the match. "Its only import is `import type`, erased at runtime, so nothing was stubbed" is evidence. "Logic untouched" is not.
-
-Where the ticket prescribes a fix, run the fix too — including the naive one it warns against. A card whose most useful sentence is "the obvious fix does not work" is worth confirming before you spend a day on the obvious fix.
-
-**Isolation:** an extra checkout keeps the repro off the working tree, but `git worktree` is not free everywhere — a git-crypt repo hands the worktree locked files, since the unlock lives in the primary `.git`. If a worktree comes up empty or encrypted, fall back to a scratch clone or run in place read-only, and say which you did.
+- **A `SURVIVED` with no attempt named is not a pass.** It is indistinguishable from a lane that did not look. Send it back.
+- **Re-verify the findings that change the text.** A lane relaying an answer from another repo, a dashboard, or a query nobody re-ran has produced a *Not checked* item, whatever confidence it reports.
 
 ## Report in three buckets
 
@@ -189,8 +151,8 @@ Corrections go to the ticket description; the verification goes to a comment. Do
 
 ## Known sites
 
-Looked-up values, so the discovery calls above are only needed for a new site. Add a row after looking one up.
+A cache for the `getAccessibleAtlassianResources` lookup, not a registry to maintain.
 
-| Site | Project keys | `cloudId` | Sprint field |
-|---|---|---|---|
-| `stxgroup.atlassian.net` | `EVO` | `ea285670-c5fb-45dd-9f85-6292c8dc4fed` | `customfield_10018` |
+| Site | `cloudId` |
+|---|---|
+| `stxgroup.atlassian.net` | `ea285670-c5fb-45dd-9f85-6292c8dc4fed` |

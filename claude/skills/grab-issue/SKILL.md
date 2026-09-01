@@ -47,6 +47,7 @@ Grab GitHub issue `#$ARGUMENTS` and ship it: read scope, implement with TDD, com
 6. **Read referenced code.** Open every file path, module, function, and PR/issue link mentioned in the issue body before writing code.
 
 7. **Grill open questions.** If scope ambiguous, acceptance criteria fuzzy, or issue contradicts code from step 6 — invoke `grill-me:grill-me` to pressure-test with user before touching code. Skip if scope is unambiguous.
+   If the contradiction is about what the code *does* rather than what to build, invoke `verify-ticket` first — it checks the issue's claims against the record and the code before you argue from them.
 
 8. **Switch to Sonnet for execution.** Run `/model claude-sonnet-4-6`. Planning is Opus; mechanical execution runs faster/cheaper on Sonnet. Skip if already Sonnet/Haiku.
 
