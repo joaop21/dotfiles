@@ -7,6 +7,7 @@ tools:
   - Read
   - Glob
   - Grep
+  - Write
   - Bash
   - mcp__plugin_atlassian_atlassian__getJiraIssue
   - mcp__plugin_atlassian_atlassian__searchJiraIssuesUsingJql
@@ -36,7 +37,9 @@ Later comments supersede earlier ones. The newest is not automatically right; it
 
 ## Fetching
 
-Your prompt carries the path to an intake file the dispatcher already fetched — card, comments, linked keys, open PRs. Read it first, and re-fetch only what you must date-check: blocker **statuses**, and anything the intake does not cover.
+Your prompt's `Intake:` path holds what the dispatcher already fetched — `key`, `sha`, `fetched_at`, the card verbatim, links, PRs, design doc. Read it first, and re-fetch only what you must date-check: blocker **statuses**, and anything it does not cover. Take the `cloudId` from it too.
+
+No `Intake:` path, or the file is missing or unreadable: fetch the card yourself from the `Key:`, resolve the `cloudId` with `getAccessibleAtlassianResources`, and say in your report that you did. That is slower, not wrong — a lane that skips the record because it could not read a file has produced nothing.
 
 - Jira: `getJiraIssue`, and `searchJiraIssuesUsingJql` with `{"jql": "key in (…)", "fields": ["key","status","summary"], "maxResults": 50}` — omit `fields` and the response overflows the tool cap.
 - GitHub: `gh issue view <n> --json state,comments,blockedBy,blocking,subIssues,parent`. `--comments` is ignored when `--json` is present; ask for the field.
@@ -55,4 +58,4 @@ At most 30 lines, one or two per claim:
 <claim> — UNDECIDABLE — <why; relays land here by default>
 ```
 
-A `SURVIVED` with no attempt named is worthless. Bulk output goes to `${TMPDIR:-/tmp}/ticket-verification/record-<short-sha>.md`; return the path, never a truncated list.
+A `SURVIVED` with no attempt named is worthless — it is indistinguishable from not having looked. **The cap budgets the evidence, not the claims:** every claim you were given gets a line, always. When it will not fit, shorten the evidence clause to nothing — never drop a claim, and never merge two. Bulk output goes to `<Scratch>/<Key>-record.md` using the absolute `Scratch` path from your prompt; return the path, never a truncated list.

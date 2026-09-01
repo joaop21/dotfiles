@@ -6,6 +6,7 @@ tools:
   - Read
   - Glob
   - Grep
+  - Write
   - Bash
 ---
 
@@ -39,4 +40,4 @@ At most 30 lines, one or two per claim:
 <claim> — UNDECIDABLE — <what you could not reach, and why>
 ```
 
-A `SURVIVED` with no attempt named is worthless — it is indistinguishable from not having looked. An enumeration too long for the cap goes to `${TMPDIR:-/tmp}/ticket-verification/repo-<short-sha>.md`; return the count and the path, never a truncated population.
+A `SURVIVED` with no attempt named is worthless — it is indistinguishable from not having looked. **The cap budgets the evidence, not the claims:** every claim you were given gets a line, always. When it will not fit, shorten the evidence clause to nothing — never drop a claim, and never merge two. An enumeration too long for the cap goes to `<Scratch>/<Key>-repo.md` using the absolute `Scratch` path from your prompt; return the count and the path, never a truncated population.

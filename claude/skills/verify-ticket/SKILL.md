@@ -2,7 +2,7 @@
 name: verify-ticket
 description: Use when picking up a bug ticket, issue, or defect report by key (a Jira key, a Jira URL, a GitHub issue number) whose description makes claims about the code, before implementing anything or agreeing the defect is real
 argument-hint: "[TICKET-1234 | jira-url | gh-issue-number]"
-allowed-tools: Bash, Read, Grep, Glob, Write, Agent, ToolSearch, Skill
+allowed-tools: Bash, Read, Grep, Glob, Write, Agent, ToolSearch, Skill, mcp__plugin_atlassian_atlassian__getJiraIssue, mcp__plugin_atlassian_atlassian__searchJiraIssuesUsingJql, mcp__plugin_atlassian_atlassian__getAccessibleAtlassianResources
 ---
 
 # Verify Ticket
@@ -11,11 +11,19 @@ A ticket description is a claim about the code, written at some past commit, by 
 
 **The failure this prevents: confirmation-by-anchor.** You open each `file.ts:260` the ticket cites, the line says what the ticket says it says, and you call the ticket verified. Every anchor can be exact while the ticket is still wrong, because the claims that break a fix are rarely at the anchors.
 
-**Default: dispatch the `ticket-verifier` agent with the key.** It owns the whole procedure including intake, and returns a capped verdict plus a path to the full report — a card body runs ~16k characters and a JQL over the linked keys can exceed 65k, none of which the caller needs. Run inline only if you *are* that agent, or the card has fewer than three claims and none of them is Universal or Behavioral.
+**Dispatch the `ticket-verifier` agent with the key.** It owns the whole procedure including intake, and returns a capped verdict plus a path to the full report — a card body runs ~16k characters and a JQL over the linked keys can exceed 65k, none of which the caller needs. Two exceptions, both knowable before you fetch anything: you *are* that agent, or the card is already in your context for another reason.
 
 Never `subagent_type: "fork"` for any of this. A fork inherits the caller's context, which is the opposite of the point.
 
 Works on any tracker; Jira and GitHub intake are peers below.
+
+## Scratch directory
+
+Everything written to disk goes under one directory. Resolve it once, with a shell, and use the absolute result everywhere after — the `Write` tool does not expand `${TMPDIR}`, and writing that string literally creates a directory of that name in the user's repo:
+
+```bash
+DIR=$(mkdir -p "${TMPDIR:-/tmp}/ticket-verification" && cd "${TMPDIR:-/tmp}/ticket-verification" && pwd)
+```
 
 ## Intake: the record, not the card
 
@@ -30,16 +38,25 @@ The card cannot tell you what the card owns. Whatever the tracker, pull all four
 
 Skip this intake and you will confirm a claim the design doc already put out of scope, and hand back a card that reads done while the other half is still live.
 
-Write what comes back to `${TMPDIR:-/tmp}/ticket-verification/<KEY>-intake.json` and pass that path to the lanes. Raw fetched data is not a verdict, so passing it does not breach the dispatch contract — and a lane that re-fetches the card pays the 16k twice.
+Write what comes back to `$DIR/<KEY>-intake.json` and pass that path to the lanes. Raw fetched data is not a verdict, so passing it does not breach the dispatch contract — and a lane that re-fetches the card pays the 16k twice. Shape:
+
+```json
+{ "key": "TICKET-1234", "sha": "<sha>", "fetched_at": "<ISO-8601 UTC>",
+  "card": { … }, "links": [ … ], "prs": [ … ], "design_doc": "<path or url>" }
+```
+
+`card` holds whatever the tracker returned, verbatim, in whatever format it returned it. `fetched_at` is what makes staleness observable to a lane rather than guessed.
 
 ### GitHub
 
+Pass `--repo <owner>/<name>` on every call: a verifier that has moved into a scratch clone otherwise queries whatever repo its cwd happens to be.
+
 ```bash
-gh issue view <n> --json title,body,state,labels,comments,closedByPullRequestsReferences,blockedBy,blocking,subIssues,parent
-gh pr list --search "<n> in:body" --state all --limit 20 --json number,title,state,url
+gh issue view <n> --repo <owner>/<name> --json title,body,state,labels,comments,closedByPullRequestsReferences,blockedBy,blocking,subIssues,parent
+gh pr list --repo <owner>/<name> --search "<n> in:body" --state all --limit 20 --json number,title,state,url
 ```
 
-`--comments` is ignored when `--json` is present; ask for the `comments` field instead. If `gh` rejects `blockedBy`/`subIssues`, it predates issue dependencies — fall back to grepping the body for `#123` and `Closes #123`.
+`--comments` is ignored when `--json` is present; ask for the `comments` field instead. If `gh` rejects `blockedBy`/`subIssues`, it predates issue dependencies — fall back to grepping the body for `#123` and `Closes #123`. The PR search is a loose substring match and will return unrelated PRs; read the titles before treating any of them as sibling work.
 
 ### Jira
 
@@ -49,7 +66,9 @@ The Atlassian tools are deferred — load them first:
 ToolSearch("select:mcp__plugin_atlassian_atlassian__getJiraIssue,mcp__plugin_atlassian_atlassian__searchJiraIssuesUsingJql,mcp__plugin_atlassian_atlassian__getAccessibleAtlassianResources")
 ```
 
-If they do not resolve, the Atlassian plugin is not enabled here. Say so and work the record you can reach; do not verify a Jira card from a description you could not fetch.
+If they do not resolve, the Atlassian plugin is not enabled here. Say so in the report — naming the tools, so a tooling problem is never mistaken for an absent plugin — and work the record you can reach; do not verify a Jira card from a description you could not fetch.
+
+`getAccessibleAtlassianResources` gives the `cloudId`. Then:
 
 ```json
 { "cloudId": "<site cloud id>", "issueIdOrKey": "TICKET-1234",
@@ -57,7 +76,7 @@ If they do not resolve, the Atlassian plugin is not enabled here. Say so and wor
   "fields": ["summary","description","status","updated","comment","issuelinks"] }
 ```
 
-`comment` and `issuelinks` are the two that matter and neither is in the default field set. Get `cloudId` from `getAccessibleAtlassianResources`, or read it off *Known sites* below.
+`comment` and `issuelinks` are the two that matter and neither is in the default field set.
 
 Then the linked and blocking keys in one call — ask for the three fields you read, or the response overflows the tool cap:
 
@@ -75,7 +94,7 @@ To run code somewhere other than the ticket's sha, first prove the file is the s
 git rev-parse <ticket-sha>:path/to/file.ts <your-sha>:path/to/file.ts
 ```
 
-Equal hashes license the move. Say in the report that you checked.
+Two unlabelled hashes, one per line, in the order given; equal lines license the move. `fatal: path … does not exist` means the file was added or moved between the two — that is a finding about the ticket, not a tooling failure. Say in the report that you checked.
 
 **Run the check yourself; never inherit one.** A comment saying "this file is unchanged since X" was true when it was written. A stale licence has you running a different function than the one you are reporting on.
 
@@ -102,29 +121,37 @@ An anchor that is real but bypassable is a refutation: a fix written to it ships
 
 Split by **claim type**, never by file or by claim. Four agents each handed "confirm `foo.ts:260`" reproduces confirmation-by-anchor four times over. Dispatch a lane when it has two or more claims of its type; a single-claim lane runs inline.
 
-| Lane | `subagent_type` | Claim types | Also receives |
+| Lane | `subagent_type` | Claim types | Extra slots it needs |
 |---|---|---|---|
-| **Repo sweep** | `claim-refuter-repo` | Universal, Anchor | nothing else — not the card, not a conclusion |
-| **Record** | `claim-refuter-record` | Scope, Comment, blocker status | the intake path |
-| **Runtime** | `claim-refuter-runtime` | Behavioral | an isolated checkout if the repo supports one |
+| **Repo sweep** | `claim-refuter-repo` | Universal, Anchor | none — not the card, not a conclusion |
+| **Record** | `claim-refuter-record` | Scope, Comment, blocker status | `Intake` |
+| **Runtime** | `claim-refuter-runtime` | Behavioral | `Checkout`, and `Prescribed fix` if the card names one |
 
 Each agent definition carries its own refute stance, breaking moves, tools and return shape. Dispatch with slots only — a template with no free-text field has nowhere for a verdict to leak into:
 
 ```
-Claims: <verbatim list, one per line>
+Key: <TICKET-KEY>
 Sha: <sha>
+Scratch: <absolute $DIR>
+Claims: <verbatim list, one per line>
+Intake: <absolute path>                       # Record lane
+Checkout: <absolute path, or "run in place">  # Runtime lane
+Prescribed fix: <verbatim from the card>      # Runtime lane, only if the card prescribes one
 Name your refutation condition for each before you look.
 ```
+
+Quote a prescribed fix verbatim and nothing around it. It is the one piece of card text a lane may receive, because "the obvious fix does not work" is worth confirming before someone spends a day on it — and a fix stated as an instruction carries no verdict about the claims.
 
 All lanes in one message so they run concurrently. The Repo lane is the one that catches universals: its whole job is enumerating populations, and it has no card text tempting it to stop at the named instance.
 
 **Do not parallelize the repro.** It is one harness; splitting it buys four transcriptions of the same file and four chances to stub something. The Runtime lane owns it, and its definition carries the method — control arm, real module, blob-hash proof.
 
-**The title check is not a lane.** It is a comparison against the Runtime lane's observed values, so it runs on the main thread once that lane returns.
+**The title check is not a lane.** It is a comparison against observed values, so it runs on the main thread once the Runtime lane returns. No Runtime lane ran — no Behavioral claims, or only one — then the title is itself a Behavioral claim: run it, or put the title under *Not checked* and say the most-quoted sentence on the card went unverified.
 
-Two rules about what comes back:
+Three rules about what comes back:
 
 - **A `SURVIVED` with no attempt named is not a pass.** It is indistinguishable from a lane that did not look. Send it back.
+- **A claim a lane did not return at all goes under *Not checked*.** Silence is not a verdict.
 - **Re-verify the findings that change the text.** A lane relaying an answer from another repo, a dashboard, or a query nobody re-ran has produced a *Not checked* item, whatever confidence it reports.
 
 ## Report in three buckets
@@ -135,7 +162,7 @@ Never one. A report that is all "held" is a report that checked anchors.
 2. **Did not hold** — the correction, and whether it changes the fix or only the wording
 3. **Not checked** — and why
 
-Corrections go to the ticket description; the verification goes to a comment. Do not silently rewrite the author's reasoning — the comment is the record of what changed and why.
+You do not write to the tracker. Corrections belong on the ticket description and the verification belongs in a comment, but the caller decides what reaches the card and makes the edit. Do not silently rewrite the author's reasoning.
 
 ## Red flags
 
@@ -148,11 +175,3 @@ Corrections go to the ticket description; the verification goes to a comment. Do
 - Your repro has one case → no control, nothing isolated
 - You ran a copy of the file → you verified a transcription
 - You cited something you remember from a prior session → re-query it, or move it to *Not checked*
-
-## Known sites
-
-A cache for the `getAccessibleAtlassianResources` lookup, not a registry to maintain.
-
-| Site | `cloudId` |
-|---|---|
-| `stxgroup.atlassian.net` | `ea285670-c5fb-45dd-9f85-6292c8dc4fed` |

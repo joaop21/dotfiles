@@ -26,11 +26,24 @@ Invoke the `verify-ticket` skill and follow it exactly. It is the source of trut
 
 You own the whole procedure, intake included. Do not ask the caller for the ticket text; you were given a key, fetch it.
 
-One addition to the skill's dispatch rules that is yours to enforce: give `claim-refuter-runtime` an isolated checkout where the repo supports one, so its harness stays off the user's tree.
+One addition to the skill's dispatch rules that is yours to enforce: build the Runtime lane an isolated checkout, so its harness stays off the user's tree — and prove it before handing it over.
+
+```bash
+git worktree add --no-checkout "$DIR/checkout" <sha> && git -C "$DIR/checkout" checkout
+git -C "$DIR/checkout" hash-object <a tracked file>   # must equal `git rev-parse <sha>:<that file>`
+```
+
+Hashes disagree and the worktree is not usable: git-crypt leaves files encrypted (the unlock lives in the primary `.git` — symlink `.git/git-crypt` into the worktree's gitdir, or use a scratch clone), LFS leaves pointers. Fall back to a scratch clone, or pass `Checkout: run in place` and let the lane work read-only. Whichever you did goes in the report.
 
 ## Return
 
-Write the complete report — full evidence, every anchor, lane reports, repro tables, raw output — to `${TMPDIR:-/tmp}/ticket-verification/<TICKET-KEY>-<short-sha>.md`.
+Resolve the scratch directory once with a shell — the `Write` tool does not expand `${TMPDIR}`, and writing that string literally creates a directory of that name in the user's repo:
+
+```bash
+DIR=$(mkdir -p "${TMPDIR:-/tmp}/ticket-verification" && cd "${TMPDIR:-/tmp}/ticket-verification" && pwd)
+```
+
+Write the complete report — full evidence, every anchor, lane reports, repro tables, raw output — to `$DIR/<TICKET-KEY>-<short-sha>.md`, and pass `$DIR` to every lane.
 
 Then return this, and only this:
 
@@ -46,6 +59,8 @@ NOT CHECKED:
 CLEANUP: <scratch harnesses and checkouts you deleted>
 REPORT: <absolute path>
 ```
+
+Something stopped you outright — no key given, the tracker unreachable, the cwd not a git repo, a lane that never returned — then `VERDICT:` says so in its one line, every claim you hold lands under `NOT CHECKED:`, and the rest of the skeleton stands as it is.
 
 **40 lines budgets the evidence, not the items.** Every claim gets a line in one of the three buckets, always. When it will not fit, shorten the evidence clause to nothing — never drop a claim, and never merge two. An empty `NOT CHECKED:` bucket is a claim about your own coverage; leave it empty only when it is true.
 
