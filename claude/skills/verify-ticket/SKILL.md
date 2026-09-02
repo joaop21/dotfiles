@@ -132,6 +132,7 @@ Each agent definition carries its own refute stance, breaking moves, tools and r
 ```
 Key: <TICKET-KEY>
 Sha: <sha>
+Repo: <absolute path to the repo the claims are about>
 Scratch: <absolute $DIR>
 Claims: <verbatim list, one per line>
 Intake: <absolute path>                       # Record lane
@@ -139,6 +140,8 @@ Checkout: <absolute path, or "run in place">  # Runtime lane
 Prescribed fix: <verbatim from the card>      # Runtime lane, only if the card prescribes one
 Name your refutation condition for each before you look.
 ```
+
+`Repo:` is not optional. A lane inherits your working directory, not your subject — without it, a lane dispatched from anywhere but the repo under test enumerates the wrong tree and reports it confidently.
 
 Quote a prescribed fix verbatim and nothing around it. It is the one piece of card text a lane may receive, because "the obvious fix does not work" is worth confirming before someone spends a day on it — and a fix stated as an instruction carries no verdict about the claims.
 
