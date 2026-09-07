@@ -18,49 +18,53 @@ file, an unset `origin/HEAD`. Only an exhausted list of sources is a stop.
 
 ## When to use
 
-- Implementation is complete on a feature branch, PR not yet opened
+- Implementation is complete on a feature branch
 - After `branch-worker`, `issue-worker`, or `issue-swarm` finishes
+- Again on a branch whose PR is already open — after review feedback, or on a
+  draft. An open PR is a valid subject and the anchor's second-best source.
 
-**Not for:** work in progress, the default branch, or a PR that already exists.
+**Not for:** work in progress, or the default branch.
 
 ## Step 0: Preflight
 
-Bail before spending a `gh` call. Resolve the default branch the way
-`cleanup-git` does, then both conditions must hold or stop with the reason:
+Bail before spending a `gh` call. The `set-head` fallback is the one step that
+reaches the remote, so an auth-gated origin can stall or prompt there. One
+chain, one verdict line — act on the line it prints:
 
 ```bash
-DEFAULT=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null) \
-  || { git remote set-head origin -a 2>/dev/null; DEFAULT=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null); }
-[ -n "$DEFAULT" ] || DEFAULT=$(git config --get init.defaultBranch)   # no origin: still a source
-
-if [ -z "$DEFAULT" ]; then
-  echo "ESCALATE question: no default branch resolves"          # never guess 'master'
-elif ! BASE=$(git merge-base HEAD "$DEFAULT" 2>/dev/null); then
-  echo "ESCALATE question: no merge-base between HEAD and $DEFAULT"
-fi
-
 BRANCH=$(git branch --show-current)                 # empty means detached HEAD
 if [ -z "$BRANCH" ]; then
-  echo "BAIL: detached HEAD, no branch to commit to"
-elif [ "$BRANCH" = "${DEFAULT#origin/}" ]; then
-  echo "BAIL: on the default branch"
-elif [ -n "$BASE" ] && git diff --quiet "$BASE"; then
-  echo "BAIL: no changes since the merge-base"
+  echo "BAIL: detached HEAD, no branch to commit to"     # bails before any network call
 else
-  echo "PREFLIGHT OK: $BRANCH vs $BASE"
+  DEFAULT=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null) \
+    || { git remote set-head origin -a 2>/dev/null; DEFAULT=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null); }
+  [ -n "$DEFAULT" ] || DEFAULT=$(git config --get init.defaultBranch)   # no origin: still a source
+
+  if [ -z "$DEFAULT" ]; then
+    echo "ESCALATE question: no default branch resolves"          # never guess 'master'
+  elif [ "$BRANCH" = "${DEFAULT#origin/}" ]; then
+    echo "BAIL: on the default branch"
+  elif ! BASE=$(git merge-base HEAD "$DEFAULT" 2>/dev/null); then
+    echo "ESCALATE question: no merge-base between HEAD and $DEFAULT"   # unguarded, it exits 128
+  elif git diff --quiet "$BASE" && [ -z "$(git ls-files --others --exclude-standard)" ]; then
+    echo "BAIL: no changes since the merge-base"    # untracked files are changes too
+  else
+    echo "PREFLIGHT OK: $BRANCH vs $BASE"
+  fi
 fi
 ```
 
-Read the printed line, not the exit status. `git diff --quiet` exits 1 exactly
-when changes *do* exist, so a passing preflight otherwise looks like a failed
-command. A detached HEAD is a bail, not a pass: `--show-current` returns empty,
-which would slip the default-branch check and leave Finish with nothing to
-commit to.
+Read that line, not the exit status: `git diff --quiet` exits 1 exactly when
+changes *do* exist, so a passing preflight otherwise looks like a failed
+command.
 
-Never let `merge-base` run against an empty `$DEFAULT` — it exits 128 and kills the
-step. Guard it as above: no `$DEFAULT`, or no merge-base, is a `question`, not a
-guessed `master`, and nothing downstream runs without a `$BASE`.
-Keep `$BASE`: Step 2 and every stage diff against it rather than recomputing it.
+**Copy the SHA out of the `PREFLIGHT OK` line and substitute it literally from
+here on.** Shell variables do not survive between Bash calls in this harness: a
+later `git diff $BASE` expands to a bare `git diff`, which exits 0 and reports
+only unstaged changes — staged work and every commit on the branch vanish, with
+no error to notice. Write the SHA into the command, and into every dispatch's
+`Base:` slot. `$BASE` below is shorthand for that literal SHA, never a variable
+to expand. Nothing downstream runs without it, and no stage recomputes it.
 
 ## Step 1: Goal anchor (required)
 
@@ -95,15 +99,39 @@ Escalate on an observable predicate, not a feeling:
 ## The gate
 
 On any escalation the main thread **halts the chain** and puts it to the user
-with `AskUserQuestion`: stop / proceed / adjust. Nothing downstream runs until
-the user answers. Every escalation halts — the user decides what is worth their
-time.
+with `AskUserQuestion`. Nothing downstream runs until the user answers. Every
+escalation halts — the user decides what is worth their time.
 
-**Any stage returning a `STATUS` other than `pass` halts the chain the same
-way**, whether or not it also filled `ESCALATIONS`. A `fail` with `ESCALATIONS
-none` — a red `verify`, say — is still a stop: read the stage's `FINDINGS` back
-to the user with `AskUserQuestion` and let them rule. Never treat an empty
-`ESCALATIONS` block as permission to continue past a non-`pass` status.
+Normally offer three options, and do what the chosen one says:
+
+- **stop** — end the run here. Report what happened, hand back, commit nothing.
+  The working tree keeps whatever stage 1 or 3 already applied.
+- **proceed** — the user has ruled the escalation acceptable. Resume at the
+  stage after the one that escalated, carrying their ruling into that stage's
+  `Goal anchor` slot so it is not raised again. Step 2 is not a stage: proceed
+  on a drift-scan escalation resumes at stage 1.
+- **adjust** — the user supplies the missing fact (a base SHA, a corrected
+  anchor, a scope ruling). Apply it, then re-run the step that escalated.
+
+A Step 0 escalation resolves no `$BASE`, and nothing downstream runs without
+one — so **proceed is not on offer there.** Offer stop / adjust only, and treat
+adjust as the user naming the base to diff against.
+
+Halt the same way whenever a stage returns:
+
+- `STATUS blocked` — a stage that could not run is not a stage that passed
+- a non-empty `ESCALATIONS` block, whatever its `STATUS`
+- `STATUS fail` from **stage 3 or stage 4**. Stage 3 is the fixer, so a failing
+  stage 3 has nowhere left to route it; a red stage 4 is the thing this gate
+  exists to catch. Read that stage's `FINDINGS` back to the user with
+  `AskUserQuestion` and let them rule. **A failed stage 4 never reaches
+  Finish** — `ESCALATIONS none` is not permission to continue.
+
+`STATUS fail` from stage 1 or stage 2, with `ESCALATIONS none`, does **not**
+halt. Fixing blockers is what stage 3 is for, and stopping to ask would
+interrupt nearly every run. Carry every `blocker` line into stage 3's
+`Findings to triage` slot, add every `judgement` line to the Finish collection,
+and continue in stage order — stage 3 runs *after* stage 2, never instead of it.
 
 **Never revert, delete, or narrow out-of-scope work on your own authority.**
 Work outside the anchor may be deliberate and the anchor may be stale. Removing
@@ -136,12 +164,14 @@ is a user-only gate by design. Stage 4 gathers automated evidence; the user runs
 `/verify` after this skill hands back.
 
 Stage 1's cleanup lands in the **working tree**, and nothing is committed until
-Finish — so `$BASE..HEAD`, the range `requesting-code-review` reaches for by
+Finish — so `<SHA>..HEAD`, the range `requesting-code-review` reaches for by
 default, does not contain it. Stage 2 must override the range it hands its
-reviewer: base `$BASE`, head *the working tree*, reviewed with `git diff $BASE`
-(plus `git status --porcelain` for new files), never `git diff $BASE..HEAD`.
+reviewer: base `<SHA>`, head *the working tree*, reviewed with `git diff <SHA>`
+(plus `git status --porcelain` for new files), never `git diff <SHA>..HEAD`.
 The reviewer stays read-only on the checkout — stage 2 does not commit to
-manufacture a head SHA. Pass this in the `Review range` slot.
+manufacture a head SHA. All of that travels in the `Review range` slot, in full:
+a slot that says less than this paragraph hands stage 2 an incomplete change
+set, and it will not know what it missed.
 
 Dispatch with slots only — a template with no free-text field has nowhere for
 your own conclusion to leak in and be graded back at you:
@@ -149,24 +179,35 @@ your own conclusion to leak in and be graded back at you:
 ```
 Stage: <n — and the skill it must invoke, by name>
 Repo: <absolute path to the repo under check>
-Base: <$BASE>
+Base: <the literal SHA from preflight — never the characters "$BASE">
 Goal anchor: <the source used, plus the acceptance criteria>
 Out of scope: <verbatim from the anchor, or "none stated">
 Anti-revert rule: <the "Never revert, delete, or narrow" paragraph above, verbatim>
-Review range: <stage 2 only — "$BASE vs the working tree, via git diff $BASE">
-Findings to triage: <stage 3 only — stage 2's FINDINGS lines, verbatim>
+Blocker vs judgement: <fix blockers only; judgement findings are the user's call and must not be applied. Plus the table below, verbatim, and: `superpowers:requesting-code-review` grades Critical and Important as blocker, Minor as judgement>
+Commit policy: <"Do not commit, do not push, do not open a PR — nothing is committed until Finish">
+Review range: <stage 2 only — "<SHA> vs the working tree: git diff <SHA> for tracked changes, plus git status --porcelain for files new to the tree; never git diff <SHA>..HEAD. Stay read-only on the checkout — do not commit to manufacture a head SHA">
+Findings to triage: <stage 3 only — the FINDINGS lines to fix, verbatim, from whichever earlier stage produced them: stage 2's, plus any blocker lines stage 1 returned>
 Report contract: <the four sections below, verbatim>
 ```
 
-Fill every slot that applies to the stage and drop the ones that do not. Two are
-load-bearing:
+Fill every slot that applies to the stage and drop the ones that do not. Four
+are load-bearing:
 
 - **Anti-revert rule** goes to *every* stage. The main thread edits nothing;
-  stage 1 and stage 3 do, and they are the only agents that can revert
-  out-of-scope work. A prohibition they never receive constrains nobody.
-- **Findings to triage** is stage 3's whole input. Stage 3 triages stage 2's
-  findings, and a subagent sees nothing you do not put in its prompt — dispatch
-  it without this slot and it has nothing to triage.
+  stage 1, stage 3, and the judgement fixer do, and they are the only agents
+  that can revert out-of-scope work. A prohibition they never receive
+  constrains nobody.
+- **Blocker vs judgement** goes to *every* stage that edits. "Blockers auto-
+  fixed, judgement calls asked" is a property of this skill, not of the stage
+  skills — stage 3 has no other way to learn it, and a stage 3 that quietly
+  applies the Minor findings has taken the user's decisions for them.
+- **Commit policy** goes to *every* stage. Every stage runs against an
+  uncommitted tree, and the review range depends on it staying that way: one
+  stage committing behind your back moves the boundary the next stage reads.
+- **Findings to triage** is stage 3's whole input. Stage 3 triages the findings
+  the earlier stages produced — stage 2's, plus any blocker stage 1 returned —
+  and a subagent sees nothing you do not put in its prompt: dispatch it without
+  this slot and it has nothing to triage.
 
 `Repo:` is not optional — a stage inherits your working directory, not your
 subject. Never `subagent_type: "fork"`: a fork inherits the caller's context,
@@ -204,34 +245,44 @@ skill that failed to resolve. Never approximate the stage by hand.
 | Regression against the anchor | Missing coverage, "consider…" |
 | Contract or invariant violation | Anything prefixed "nit" |
 
-**Regression means the diff broke something the anchor asked for.** Work that is
-merely *extra* relative to the anchor is drift, never a regression — so it is
-escalated, never fixed in stage 3. Stage 3 makes existing behaviour correct; it
-never decides that behaviour should not exist. If removing it is the only way to
-"fix" a finding, that is the tell you are holding drift.
+**Regression means the diff broke something the anchor asked for**, never work
+that is merely *extra* relative to it. The test: if removing something is the
+only way to "fix" a finding, it is drift, and drift escalates.
 
 `superpowers:requesting-code-review` grades findings Critical / Important /
-Minor: blocker is Critical and Important, judgement is Minor. (The grading lives
-in the *requesting* skill, stage 2 — `receiving-code-review` has none.)
+Minor: blocker is Critical and Important, judgement is Minor.
 
 ## Finish
 
-Reached only when **every stage returned `STATUS pass`** — any other status
-halted the chain at the gate, and nothing here runs.
+Reached only when **stage 4 returned `STATUS pass`** and no stage tripped a
+halt. A stage 1 or 2 `fail` that routed on to stage 3 is not a halt; every other
+non-`pass` is, and a halted chain never arrives here.
 
 Judgement findings from every stage are collected and put to the user in one
 `AskUserQuestion` with `multiSelect: true`. Unlike escalations they do not halt
 the chain — they wait until it is done. A finding that is simply wrong gets
 pushed back on with reasoning, not implemented.
 
+**Whatever the user accepts goes to one more subagent, not to you.** The main
+thread has no `Edit` or `Write` and does not acquire them at the finish line —
+dispatch a **judgement fixer** on the same template: `Stage: judgement fixer —
+invokes no skill; applies only the findings listed below, and nothing else`, the
+accepted findings verbatim in `Findings to triage`, and the `Repo`, `Base`,
+`Goal anchor`, `Out of scope`, `Anti-revert rule`, `Blocker vs judgement`,
+`Commit policy` and `Report contract` slots exactly as every stage gets them. It
+returns the same report contract, and its own escalations halt like any other.
+If the user accepts nothing, skip it and commit what the stages already did.
+
 Commit the fixes — message under 50 chars, no co-author trailer, unless the
 repo's own conventions say otherwise, in which case the repo wins.
 
-**Stage only the paths the stages actually touched.** Preflight tolerates
-pre-existing uncommitted work, so `git commit -a` would sweep unrelated changes
-into your commit. Name the paths explicitly, and run `git status` before
-committing to confirm nothing else rode along. Print one
-summary line per stage plus the verify evidence.
+**Stage only the paths the stages actually touched — never by wildcard.** The
+tree may already have held unrelated changes when preflight passed, so
+`git commit -a`, `git add -A` and `git add .` all sweep them into your commit.
+Name the paths, and run `git status` before committing to confirm nothing else
+rode along.
+
+Print one summary line per stage plus the verify evidence.
 
 Then hand back with the one thing this skill cannot do for the user:
 
