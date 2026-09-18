@@ -271,6 +271,7 @@
     "command": "bash ~/.dotfiles/claude/statusline.sh",
     "type": "command"
   },
+  "syncClaudeAiSkills": false,
   "theme": "dark",
   "tui": "fullscreen"
 }
