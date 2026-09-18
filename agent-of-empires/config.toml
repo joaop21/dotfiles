@@ -3,7 +3,7 @@ default_profile = ""
 [acp]
 allow_agent_install = false
 auto_stop_idle_secs = 0
-default_agent = "aoe-agent"
+default_agent = "claude-code"
 max_concurrent_workers = 5
 node_path = ""
 rate_limit_auto_resume = false
