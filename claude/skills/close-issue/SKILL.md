@@ -10,12 +10,12 @@ Snapshot first. Act only on what the snapshot shows open. Corrections are commen
 
 ## 1. Snapshot — read, print, stop
 
-Inputs: the GitHub issue, Jira key and PR named in this session. None named: ask.
+Inputs: the repo (`owner/name`), GitHub issue, Jira key and PR named in this session. No issue or PR named: ask.
 
 One `general-purpose` subagent fetches current state — nothing recalled from earlier in the session. Its dispatch names the repo, PR, issue numbers and Jira key literally, and says: read-only — post, close and transition nothing.
 
-- `gh pr view <PR> --json state,mergedAt,closingIssuesReferences`
-- `gh issue view <N> --json state,body,comments` — the issue and each issue its body or comments link
+- `gh issue view <N> --repo <owner/name> --json state,body,comments,closedByPullRequestsReferences` — the issue and each issue its body or comments link
+- `gh pr view <PR> --repo <owner/name> --json state,mergedAt,closingIssuesReferences` — the PR named, plus each PR the issue references
 - Jira: status, comments, linked issues, via the atlassian MCP (`ToolSearch` loads the tools)
 
 It returns exactly this, nothing else:
@@ -30,8 +30,9 @@ item | verbatim line that no longer holds | what is true now | command output pr
 
 "already done" holds work a comment, link, or status already covers. "outstanding" holds work nothing tracks yet. Print the report as returned and stop: the user picks the rows to act on.
 
-## 2. Act on "outstanding" only
+## 2. Act on "outstanding" and "Stale" rows the user picked
 
+- A PR row that is not `MERGED`: stop. Nothing closes or transitions against unmerged work.
 - A correction to an issue, PR or card is a new comment. The existing body stays as it is.
 - Draft each comment from the `## Stale` row, then one `general-purpose` subagent: "Invoke the `humanizer:humanizer` skill on this text and return only the rewritten comment." Show what comes back, post on "go".
 - Outstanding work with no card: propose one under the same epic, create on "go".
