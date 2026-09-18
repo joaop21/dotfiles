@@ -68,9 +68,3 @@ alias vim='nvim'
 # +--------+
 
 alias cf='claude --worktree'
-
-# +------------+
-# | Agent Deck |
-# +------------+
-
-alias ad='agent-deck'
