@@ -50,7 +50,8 @@ Otherwise, exactly these two sections, nothing before, between, or after:
 
 ## This change addresses the need by:
 
-- <what changed — one line per change>
+- <what changed and how it meets the need — one bullet per change, one or
+  two sentences each, a paragraph at most>
 ```
 
 That is the whole body. The reader has the diff: say what changed, not how
