@@ -22,7 +22,7 @@ github-copilot
 gnupg
 
 # Homebrew
-homebrew/trust.json
+homebrew/trust.json*
 
 # SwiftPM
 swiftpm
@@ -43,3 +43,7 @@ claude/skills/.trash
 
 # Wrangler — OAuth tokens, logs, dev registry; nothing user-authored
 .wrangler
+
+# Herdr — track config.toml, ignore session state, logs and sockets
+herdr/*
+!herdr/config.toml
