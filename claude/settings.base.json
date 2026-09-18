@@ -34,6 +34,7 @@
     "crit@crit": true,
     "figma@claude-plugins-official": false,
     "grill-me@subvisual": false,
+    "humanizer@humanizer": true,
     "mattpocock-skills@claude-plugins-official": true,
     "superpowers@claude-plugins-official": true
   },
@@ -53,6 +54,12 @@
     "crit": {
       "source": {
         "repo": "tomasz-tomczyk/crit",
+        "source": "github"
+      }
+    },
+    "humanizer": {
+      "source": {
+        "repo": "blader/humanizer",
         "source": "github"
       }
     },
@@ -261,6 +268,11 @@
         ]
       }
     ]
+  },
+  "modelSettings": {
+    "claude-fable-5-1": {
+      "effortLevel": "high"
+    }
   },
   "permissions": {
     "defaultMode": "auto"
