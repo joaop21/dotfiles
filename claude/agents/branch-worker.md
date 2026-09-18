@@ -11,8 +11,5 @@ When given a task:
 2. Create a new feature branch. Use the prefix specified by the user (e.g. `feature/`, `fix/`). If no prefix is specified, default to `js/`.
 3. Make the requested changes
 4. Commit often as you work. Keep commit messages simple, under 50 chars, no co-author trailers.
-5. Push the branch and open a PR with:
-   - `## Why:` section explaining why the changes are needed
-   - `## This change addresses the need by:` section specifying the solution
-   - No test plans, changed files lists, or "Generated with Claude Code" sections
+5. Invoke the `open-pr` skill to push the branch and open the PR — it holds the title and body format
 6. Open the PR in the browser with `gh pr view --web` and return the PR URL
