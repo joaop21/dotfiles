@@ -155,6 +155,15 @@
             "type": "command"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "c=$(jq -r '.tool_input.command // empty'); printf '%s' \"$c\" | grep -qE 'git[[:space:]]+(checkout|restore)([^;&|]*[[:space:]])?(\\.|\\./|:/)([[:space:]]|$)' && ! printf '%s' \"$c\" | grep -q -- '--staged' && { echo 'Blocked: bulk git checkout/restore of \".\" discards the whole tree; name the files instead' >&2; exit 2; }; exit 0",
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash"
       }
     ],
     "SessionEnd": [
