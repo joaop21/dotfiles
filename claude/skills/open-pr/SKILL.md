@@ -30,7 +30,8 @@ Match the repo's convention. Resolve it from the first source that answers:
    the dominant shape: `feat(scope): …`, `ABC-123: …`, `[bug] …`,
    `Tool - …`, whatever it is. A ticket key in the branch name
    (`ABC-123-…`, `issue-42-…`) goes where those titles put it.
-3. No history: `<Tool> - <Short description>` — `Nvim - Fix Elixir setup`.
+3. Nothing stated and no consistent shape in the history: a one-sentence
+   TL;DR of the change.
 
 The commit subject takes the same shape.
 
