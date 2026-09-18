@@ -29,8 +29,7 @@ First source that answers:
 1. `CLAUDE.md` or `CONTRIBUTING.md` states a PR title format.
 2. `gh pr list --state merged --limit 10 --json title -q '.[].title'` has a
    dominant shape (`feat(scope): …`, `ABC-123: …`, `[bug] …`, `Tool - …`):
-   copy it. A ticket key in the branch name (`ABC-123-…`, `issue-42-…`) goes
-   where those titles put it.
+   copy it. A ticket key the user named goes where those titles put it.
 3. Neither: a one-sentence TL;DR of the change.
 
 The commit subject takes the same shape.
@@ -49,6 +48,11 @@ nothing before, between, or after:
 
 - <what changed and how it meets the need — one bullet per change, one or
   two sentences each, a paragraph at most>
+
+<`Closes #N` for the GitHub issue this PR finishes, `Part of #N` for one it
+ only advances — the issue the user named in this session; no line when none>
 ```
+
+Links the user gave (issue, ticket, doc, related PR) go in `## Why:`.
 
 No test plan, no changed-files list, no footer.
