@@ -39,7 +39,7 @@
     "figma@claude-plugins-official": false,
     "grill-me@subvisual": false,
     "humanizer@humanizer": true,
-    "mattpocock-skills@claude-plugins-official": true,
+    "mattpocock-skills@claude-plugins-official": false,
     "superpowers@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {

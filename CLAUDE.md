@@ -1,7 +1,5 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
 ## Overview
 
 Personal dotfiles repository using XDG Base Directory Specification. `XDG_CONFIG_HOME` points directly to `~/.dotfiles`, so most tools find their configs here automatically.
@@ -18,19 +16,6 @@ Personal dotfiles repository using XDG Base Directory Specification. `XDG_CONFIG
 **Zsh load order**: `~/.zshenv` → `system/env.sh` + `system/secret.env.sh` → `zsh/.zshrc` (sources aliases, completions, bindings, theme, plugins)
 
 **Plugins/themes**: Managed as git submodules in `zsh/plugins/` and `zsh/themes/`.
-
-**Neovim**: LazyVim distribution. Plugin configs in `nvim/lua/plugins/`, core settings in `nvim/lua/config/`.
-
-## Key directories
-
-- `system/` — Shell environment (`env.sh`), aliases (`aliases.sh`), encrypted secrets (`secret.env.sh`)
-- `zsh/` — Zsh config, plugins (submodules), Powerlevel10k theme
-- `nvim/` — Neovim/LazyVim config
-- `wezterm/` — Terminal emulator config
-- `zed/` — Zed editor config
-- `bat/`, `ripgrep/` — CLI tool configs (referenced via env vars)
-- `gh/` — GitHub CLI config and aliases
-- `agent-of-empires/` — aoe (tmux AI-agent session manager) XDG config; only `config.toml` is tracked, generated runtime state (logs, caches, locks, `profiles/`, `tui-presence/`, `trusted_repos.toml`) is gitignored
 
 ## Encryption
 
