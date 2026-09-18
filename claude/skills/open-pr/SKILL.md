@@ -16,20 +16,28 @@ Branch, commit, push, `gh pr create`, print the URL. One PR per logical change.
    they gave one (e.g. `js/`). Already on a feature branch: stay.
 3. Stage the change's paths by name. Never `git add -A`, `git add .`, or
    `commit -a` — the tree may hold unrelated work.
-4. Commit. The message is one line, under 50 characters, in the PR title
-   form below. No body, no trailer.
+4. Commit. The message is one line, under 50 characters, in the title form
+   below. No body, no trailer.
 5. `git push -u origin <branch>`, then `gh pr create` with the title and body
    below. Print the PR URL. Stop — no `--web`, no merge.
 
 ## Title
 
-`<Tool> - <Short description>` — tool or area touched, a space-hyphen-space,
-then what changed. `Nvim - Fix Elixir setup`, `ZSH - Add history options`,
-`Git - Ignore wrangler state`.
+Match the repo's convention. Resolve it from the first source that answers:
+
+1. The repo's `CLAUDE.md` or `CONTRIBUTING.md` states a PR title format.
+2. `gh pr list --state merged --limit 10 --json title -q '.[].title'` — copy
+   the dominant shape: `feat(scope): …`, `ABC-123: …`, `[bug] …`,
+   `Tool - …`, whatever it is. A ticket key in the branch name
+   (`ABC-123-…`, `issue-42-…`) goes where those titles put it.
+3. No history: `<Tool> - <Short description>` — `Nvim - Fix Elixir setup`.
+
+The commit subject takes the same shape.
 
 ## Body
 
-Exactly these two sections, nothing before, between, or after:
+If `.github/pull_request_template.md` exists, fill that template.
+Otherwise, exactly these two sections, nothing before, between, or after:
 
 ```markdown
 ## Why:
