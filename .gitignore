@@ -36,3 +36,7 @@ uv/uv-receipt.json
 # Agent of Empires (aoe) — track config.toml, ignore generated runtime state
 agent-of-empires/*
 !agent-of-empires/config.toml
+
+# Claude Code — skills synced from claude.ai (sync disabled via syncClaudeAiSkills)
+claude/skills/synced
+claude/skills/.trash
