@@ -40,3 +40,6 @@ agent-of-empires/*
 # Claude Code — skills synced from claude.ai (sync disabled via syncClaudeAiSkills)
 claude/skills/synced
 claude/skills/.trash
+
+# Wrangler — OAuth tokens, logs, dev registry; nothing user-authored
+.wrangler
