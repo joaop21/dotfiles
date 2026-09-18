@@ -46,7 +46,7 @@ Otherwise, exactly these two sections, nothing before, between, or after:
 ```markdown
 ## Why:
 
-<what was wrong or missing — one or two sentences>
+<what was wrong or missing — one or two sentences, a paragraph at most>
 
 ## This change addresses the need by:
 
