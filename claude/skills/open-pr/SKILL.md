@@ -51,6 +51,14 @@ nothing before, between, or after:
 
 <`Closes #N` for the GitHub issue this PR finishes, `Part of #N` for one it
  only advances — the issue the user named in this session; no line when none>
+
+<details>
+<summary>Evidence</summary>
+
+<command output, logs, verification runs, version tables — whatever backs the
+ bullets above; no block when there is none>
+
+</details>
 ```
 
 Links the user gave (issue, ticket, doc, related PR) go in `## Why:`.
