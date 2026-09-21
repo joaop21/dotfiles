@@ -134,6 +134,15 @@
           }
         ],
         "matcher": "Bash"
+      },
+      {
+        "hooks": [
+          {
+            "command": "~/.claude/scripts/secret-guard.py",
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash|Write|Edit|MultiEdit|NotebookEdit"
       }
     ],
     "SessionEnd": [
