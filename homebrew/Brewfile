@@ -1,0 +1,230 @@
+tap "asheshgoplani/tap"
+tap "elixir-tools/tap"
+tap "hashicorp/tap"
+tap "heroku/brew"
+tap "homebrew/bundle"
+tap "nikitabobko/tap"
+tap "tenderly/tenderly"
+# Static checker for GitHub Actions workflow files
+brew "actionlint"
+# Cryptography and SSL/TLS Toolkit
+brew "openssl@3"
+# Terminal multiplexer
+brew "tmux"
+# Terminal session manager for AI coding agents
+brew "aoe"
+# Extendable version manager with support for Ruby, Node.js, Erlang & more
+brew "asdf"
+# Automatic configure script builder
+brew "autoconf"
+# Official Amazon AWS command-line interface
+brew "awscli"
+# Clone of cat(1) with syntax highlighting and Git integration
+brew "bat"
+# Core application library for C
+brew "glib"
+# GNU File, Shell, and Text utilities
+brew "coreutils"
+# Your feedback loop with the agent: review plans and code locally
+brew "crit"
+# Top-like interface for container metrics
+brew "ctop"
+# Load/unload environment variables based on $PWD
+brew "direnv"
+# Command-line tool for DigitalOcean
+brew "doctl"
+# XML 1.0 parser
+brew "expat"
+# Modern, maintained replacement for ls
+brew "eza"
+# Simple, fast and user-friendly alternative to find
+brew "fd"
+# Command-line tools for fly.io services
+brew "flyctl"
+# OpenType text shaping engine
+brew "harfbuzz"
+# TIFF library and utilities
+brew "libtiff"
+# Development kit for the Java programming language
+brew "openjdk"
+# XSL-FO print formatter for making PDF or PS documents
+brew "fop"
+# Command-line fuzzy finder written in Go
+brew "fzf"
+# GNU awk utility
+brew "gawk"
+# GitHub command-line tool
+brew "gh"
+# Distributed revision control system
+brew "git"
+# Enable transparent encryption/decryption of files in a git repo
+brew "git-crypt"
+# Git extension for versioning large files
+brew "git-lfs"
+# Audit git repos for secrets
+brew "gitleaks"
+# Open-source GitLab command-line tool
+brew "glab"
+# GNU implementation of the famous stream editor
+brew "gnu-sed"
+# GNU Transport Layer Security (TLS) Library
+brew "gnutls"
+# GNU Privacy Guard (OpenPGP)
+brew "gnupg"
+# GNU Ubiquitous Intelligent Language for Extensions
+brew "guile"
+# Agent multiplexer that lives in your terminal
+brew "herdr"
+# Improved top (interactive process viewer)
+brew "htop"
+# Lightweight and flexible command-line JSON processor
+brew "jq"
+# Handy way to save and run project-specific commands
+brew "just"
+# Easy building and installing of Erlang/OTP instances
+brew "kerl"
+# Simple terminal UI for git commands
+brew "lazygit"
+# GNOME XML library
+brew "libxml2"
+# C XSLT library for GNOME
+brew "libxslt"
+# Control and observe media playback from the command-line
+brew "media-control"
+# Ambitious Vim-fork focused on extensibility and agility
+brew "neovim"
+# Retrieves currently playing media, and simulates media actions
+brew "nowplaying-cli"
+# Manage multiple Node.js versions
+brew "nvm"
+# Pinentry for GPG on Mac
+brew "pinentry-mac"
+# Draw UML diagrams
+brew "plantuml"
+# Object-relational database system
+brew "postgresql@14"
+# Persistent key-value database, with built-in net interface
+brew "redis"
+# Search tool like grep and The Silver Searcher
+brew "ripgrep"
+# CLI proxy to minimize LLM token consumption
+brew "rtk"
+# Rust toolchain installer
+brew "rustup"
+# Code-search similar to ack
+brew "the_silver_searcher"
+# Validating, recursive, caching DNS resolver
+brew "unbound"
+# Command-line client for WebSockets
+brew "websocat"
+# Internet file retriever
+brew "wget"
+# Cross-platform C++ GUI toolkit
+brew "wxwidgets@3.2"
+# Programming language designed for robustness, optimality, and clarity
+brew "zig"
+# Shell extension to navigate your filesystem faster
+brew "zoxide"
+# UNIX shell (command interpreter)
+brew "zsh"
+# Tools for building Android applications
+cask "android-studio"
+# Tool to flash OS images to SD cards & USB drives
+cask "balenaetcher"
+# 3D creation suite
+cask "blender"
+# Web browser focusing on privacy
+cask "brave-browser"
+# E-books management software
+cask "calibre"
+# Browser for SQLite databases
+cask "db-browser-for-sqlite"
+# Voice and text chat software
+cask "discord"
+# App to build and share containerised applications and microservices
+cask "docker-desktop"
+cask "font-meslo-lg-nerd-font"
+cask "font-monaspice-nerd-font"
+cask "font-noto-sans-symbols-2"
+cask "font-sauce-code-pro-nerd-font"
+# Terminal emulator that uses platform-native UI and GPU acceleration
+cask "ghostty"
+# Web browser
+cask "google-chrome"
+# AI-powered notepad for meetings
+cask "granola"
+# Companion app for Home Assistant home automation software
+cask "home-assistant"
+# HTTP and GraphQL Client
+cask "insomnia"
+# Terminal emulator as alternative to Apple's Terminal app
+cask "iterm2"
+# Keyboard customiser
+cask "karabiner-elements"
+# Code notebooks for Elixir developers
+cask "livebook"
+# Provides updates to various Microsoft products
+cask "microsoft-auto-update"
+# Meet, chat, call, and collaborate in just one place
+cask "microsoft-teams"
+# Password manager
+cask "nordpass"
+# Client-side GUI application for modern database development and operations
+cask "nosql-workbench"
+# App to write, plan, collaborate, and get organised
+cask "notion"
+# Knowledge base that works on top of a local folder of plain text Markdown files
+cask "obsidian"
+# GUI client for PostgreSQL databases
+cask "postico"
+# VPN client focusing on security
+cask "protonvpn"
+# Toolbox companion for QMK Firmware
+cask "qmk-toolbox"
+# Imaging utility to install operating systems to a microSD card
+cask "raspberry-pi-imager"
+# Control your tools with a few keystrokes
+cask "raycast"
+# GUI for streamlined Redis application development
+cask "redis-insight"
+# Team communication and collaboration software
+cask "slack"
+# Music streaming service
+cask "spotify"
+# Open-source media center
+cask "stremio"
+# JDK from the Eclipse Foundation (Adoptium)
+cask "temurin"
+# To-do & task list manager
+cask "ticktick"
+# To-do list
+cask "todoist-app"
+# Web browser focusing on security
+cask "tor-browser"
+# Open-source code editor
+cask "visual-studio-code"
+# GPU-accelerated cross-platform terminal emulator and multiplexer
+cask "wezterm"
+# Network protocol analyzer
+cask "wireshark-app"
+# Multiplayer code editor
+cask "zed"
+# Gecko based web browser
+cask "zen"
+# Video communication and virtual meeting platform
+cask "zoom"
+vscode "akamud.vscode-theme-onedark"
+vscode "asvetliakov.vscode-neovim"
+vscode "dockyard.liveview-native-vscode"
+vscode "esbenp.prettier-vscode"
+vscode "graphql.vscode-graphql"
+vscode "graphql.vscode-graphql-syntax"
+vscode "jakebecker.elixir-ls"
+vscode "juanblanco.solidity"
+vscode "mechatroner.rainbow-csv"
+vscode "ms-azuretools.vscode-containers"
+vscode "pkief.material-icon-theme"
+vscode "svelte.svelte-vscode"
+vscode "typespec.typespec-vscode"
+vscode "vscodevim.vim"
+vscode "zhuangtongfa.material-theme"
