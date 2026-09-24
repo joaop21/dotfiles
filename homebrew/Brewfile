@@ -51,6 +51,8 @@ brew "openjdk"
 brew "fop"
 # Command-line fuzzy finder written in Go
 brew "fzf"
+# GNU awk utility
+brew "gawk"
 # GitHub command-line tool
 brew "gh"
 # Distributed revision control system
@@ -61,6 +63,8 @@ brew "git-crypt"
 brew "git-lfs"
 # Audit git repos for secrets
 brew "gitleaks"
+# Open-source GitLab command-line tool
+brew "glab"
 # GNU implementation of the famous stream editor
 brew "gnu-sed"
 # GNU Transport Layer Security (TLS) Library
@@ -85,8 +89,12 @@ brew "lazygit"
 brew "libxml2"
 # C XSLT library for GNOME
 brew "libxslt"
+# Control and observe media playback from the command-line
+brew "media-control"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
+# Retrieves currently playing media, and simulates media actions
+brew "nowplaying-cli"
 # Manage multiple Node.js versions
 brew "nvm"
 # Pinentry for GPG on Mac
@@ -136,6 +144,8 @@ cask "discord"
 # App to build and share containerised applications and microservices
 cask "docker-desktop"
 cask "font-meslo-lg-nerd-font"
+cask "font-monaspice-nerd-font"
+cask "font-noto-sans-symbols-2"
 cask "font-sauce-code-pro-nerd-font"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
