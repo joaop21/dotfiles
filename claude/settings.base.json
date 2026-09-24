@@ -3,6 +3,8 @@
     "commit": "",
     "pr": ""
   },
+  "autoCompactEnabled": true,
+  "autoContinueAtUsageLimit": true,
   "autoMode": {
     "environment": [
       "### Org-wide",
@@ -31,6 +33,7 @@
     ]
   },
   "disableRemoteControl": true,
+  "editorMode": "normal",
   "effortLevel": "high",
   "enabledPlugins": {
     "building@subvisual": true,
@@ -41,6 +44,10 @@
     "humanizer@humanizer": true,
     "mattpocock-skills@claude-plugins-official": false,
     "superpowers@claude-plugins-official": true
+  },
+  "env": {
+    "CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS": "4",
+    "CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH": "2"
   },
   "extraKnownMarketplaces": {
     "caveman": {
@@ -223,13 +230,18 @@
     },
     "claude-opus-5": {
       "effortLevel": "high"
+    },
+    "claude-opus-5-5": {
+      "effortLevel": "high"
     }
   },
   "permissions": {
     "defaultMode": "auto"
   },
   "skillOverrides": {
-    "code-review": "user-invocable-only"
+    "code-review": "user-invocable-only",
+    "superpowers:requesting-code-review": "user-invocable-only",
+    "superpowers:verification-before-completion": "user-invocable-only"
   },
   "skipAutoPermissionPrompt": true,
   "skipWorkflowUsageWarning": true,
