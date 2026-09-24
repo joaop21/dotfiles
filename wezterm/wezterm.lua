@@ -17,8 +17,12 @@ config.use_fancy_tab_bar = false
 config.hide_tab_bar_if_only_one_tab = true
 
 -- Fonts
-config.font = wezterm.font("MesloLGS Nerd Font Mono")
--- config.font = wezterm.font("MesloLGS NF")
+-- Noto Sans Symbols 2 covers the Symbols for Legacy Computing block (U+1FB00+),
+-- which tokyo-night-tmux uses for window numbers and no Nerd Font ships.
+config.font = wezterm.font_with_fallback({
+	"MesloLGS Nerd Font Mono",
+	"Noto Sans Symbols 2",
+})
 config.font_size = 13
 
 config.keys = {
